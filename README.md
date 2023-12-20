@@ -2,10 +2,10 @@
 
 ![banner](alc-banner2.png)
 
-The apache-libcloud unofficial cli (alc) is a command line interface (cli) for [apache-libcloud](https://libcloud.apache.org) for ruling the multi-cloud
+The unoffical CLI for [apache-libcloud](https://libcloud.apache.org) to rule the multi-cloud
 
 
-## Guiding Priciples
+## Guiding Principles
 
   - make it a friendly CLI that is a pretty thin veneer over the apache-libcloud sdk
 
