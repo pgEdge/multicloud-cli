@@ -14,6 +14,12 @@ from libcloud.compute.types import Provider
 import prettytable
 from prettytable import PrettyTable
 
+PROVIDERS = \
+    [
+        ["equinixmetal", "eqnx", Provider.EQUINIXMETAL, "Equinix Metal"],
+        ["ec2",          "aws",  Provider.EC2,          "Amazon Web Services"],
+    ]
+
 
 def exit_message(msg, rc=1):
     message(msg)
@@ -23,10 +29,12 @@ def message(msg):
     print(msg)
 
 
-def load_config(file_nm, section):
+def load_config(section):
+    HOME = os.getenv("HOME")
+    file_nm = f"{HOME}/.libcloud.conf"
     try:
         config = configparser.ConfigParser()		
-        config.read(file_nm)
+        rc = config.read(file_nm)
         return(config[section])
     except Exception as e:
         exit_message(str(e), 1)
@@ -34,20 +42,26 @@ def load_config(file_nm, section):
     return None
 
 
+def get_provider(prvdr):
+    lp = prvdr.lower()
+
+    for p in PROVIDERS:
+        if (lp == p[0]) or (lp == p[1]):
+            return(p[0])
+
+    exit_message(f"Invalid Provider {prvdr}")
+
+
 def get_connection(provider="eqnx", metro=None):
-    prvdr = provider.lower()
-    HOME = os.getenv("HOME")
-    sect = load_config(f"{HOME}/mach.ini", prvdr)
+    prvdr = get_provider(provider)
+    sect = load_config(prvdr)
 
     try:
-        if prvdr == "eqnx":
-            Driver = libcloud.compute.providers.get_driver(Provider.EQUINIXMETAL)
+        Driver = libcloud.compute.providers.get_driver(prvdr)
+        if prvdr == "equinixmetal":
             conn = Driver(sect["api_token"])
-        elif prvdr in ("aws"):
-            Driver = libcloud.compute.providers.get_driver(Provider.EC2)
-            conn = Driver(
-                sect["access_key_id"], sect["secret_access_key"], region=metro
-            )
+        elif prvdr in ("ec2"):
+            conn = Driver(sect["access_key_id"], sect["secret_access_key"])
         else:
             exit_message(f"Invalid provider '{prvdr}'")
     except Exception as e:
@@ -353,16 +367,19 @@ def list_nodes(provider, location=None):
     """List nodes."""
     prvdr, conn, sect = get_connection(provider, location)
 
-    if prvdr == "eqnx":
+    if prvdr == "equinixmetal":
         eqnx_node_list(conn, sect["project"])
-    elif prvdr == "aws":
+    elif prvdr == "ec2":
         aws_node_list(conn)
     else:
-        exit_message(f"Invalid provider '{prvdr}' (node-list)")
+        exit_message(f"Invalid provider '{prvdr}' (list_nodes)")
 
 
 def aws_node_list(conn):
-    nodes = conn.list_nodes()
+    try:
+        nodes = conn.list_nodes()
+    except Exception as e:
+        exit_message(str(e), 1)
 
     for n in nodes:
         name = n.name.ljust(16)
@@ -404,13 +421,8 @@ def list_providers(json=False):
 
     p = PrettyTable()
 
-    p.field_names = ["Provider", "Description"]
-    p.add_rows(
-        [
-            ["equinixmetal", "Equinix Metal"],
-            ["ec2",          "Amazon Web Services"],
-        ]
-    )
+    p.field_names = ["Provider", "Alias", "Constant", "Description"]
+    p.add_rows(PROVIDERS)
 
     output_table(p, json)
     return
