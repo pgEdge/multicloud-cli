@@ -368,14 +368,14 @@ def list_nodes(provider, location=None):
     prvdr, conn, sect = get_connection(provider, location)
 
     nl = []
-    if prvdr == "equinixmetal":
-        nl = node_list(conn, sect["project"])
-    elif prvdr == "ec2":
+    if prvdr in ("eqnx", "equinixmetal"):
+        nl = eqnx_node_list(conn, sect["project"])
+    elif prvdr in ("aws", "ec2"):
         nl = aws_node_list(conn)
     else:
         exit_message(f"Invalid provider '{prvdr}' (list_nodes)")
 
-    return(nl)
+    print(nl)
 
 
 def aws_node_list(conn):
