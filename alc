@@ -367,12 +367,15 @@ def list_nodes(provider, location=None):
     """List nodes."""
     prvdr, conn, sect = get_connection(provider, location)
 
+    nl = []
     if prvdr == "equinixmetal":
-        eqnx_node_list(conn, sect["project"])
+        nl = node_list(conn, sect["project"])
     elif prvdr == "ec2":
-        aws_node_list(conn)
+        nl = aws_node_list(conn)
     else:
         exit_message(f"Invalid provider '{prvdr}' (list_nodes)")
+
+    return(nl)
 
 
 def aws_node_list(conn):
@@ -400,6 +403,7 @@ def aws_node_list(conn):
 def eqnx_node_list(conn, project):
     nodes = conn.list_nodes(project)
 
+    nl = []
     for n in nodes:
         name = n.name
         public_ip = n.public_ips[0]
@@ -408,12 +412,13 @@ def eqnx_node_list(conn, project):
         metro = f"{n.extra['facility']['metro']['name']} ({n.extra['facility']['metro']['code']})"
         az = n.extra["facility"]["code"]
         status = n.state
+        nl.add_row(name, public_ip, size, country, metro, az, status)
 
         # crd = n.extra["facility"]["address"]["coordinates"]
         # coordinates = f"{round(float(crd['latitude']), 3)},{round(float(crd['latitude']), 3)}"
 
-        #print(f"eqnx  {name:<16}  {public_ip:<15}  {status:<10}")
-        print(f"eqnx  {name:<16}  {public_ip:<15}  {status:<10}  {country:<2}  {metro:<14}  {az:<10}  {size:<15}")
+    return(nl)
+    print(f"eqnx  {name:<16}  {public_ip:<15}  {status:<10}  {country:<2}  {metro:<14}  {az:<10}  {size:<15}")
 
 
 def list_providers(json=False):
