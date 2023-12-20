@@ -23,7 +23,7 @@ The unoffical CLI for [apache-libcloud](https://libcloud.apache.org) to rule the
 
 - support for `projects` that allow us to define multi-cloud connections in our ~/.libcloud.conf
 
-- support for a simple `cluster` definition json file that allows us to name/group multi-cloud nodes in a `project`
+- a simple `cluster` definition json file that allows us to name & group multi-cloud nodes in a `project`
 
 - add support for `openstack`, `gcp` and `azure`
 
