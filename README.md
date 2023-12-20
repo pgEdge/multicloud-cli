@@ -1,8 +1,8 @@
 # libcloud-cli
 
-![banner](alc-banner.png)
+![banner](alc-banner2.png)
 
-A command line interface (cli) for [apache-libcloud](https://libcloud.apache.org) (alc) that works well for hybrid &/or multi-cloud
+The apache-libcloud unofficial cli (alc) is a command line interface (cli) for [apache-libcloud](https://libcloud.apache.org) for ruling the multi-cloud
 
 
 ## Guiding Priciples
