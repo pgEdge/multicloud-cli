@@ -16,13 +16,15 @@ The unoffical CLI for [apache-libcloud](https://libcloud.apache.org) to rule the
 
   - pure python and KISS
 
-  - start with `compute` support for `ec2`, `equinixmetal`, & `openstack`
+  - start with `compute` support for `ec2` & `equinixmetal`
 
 
 ## What's next
 
-- support for `projects`
+- support for `projects` that allow us to define multi-cloud connections in our ~/.libcloud.conf
 
-- support for `gcp` and `azure`
+- support for a simple `cluster` definition json file that allows us to name/group multi-cloud nodes in a `project`
+
+- add support for `openstack`, `gcp` and `azure`
 
 
