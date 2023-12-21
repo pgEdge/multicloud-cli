@@ -103,7 +103,7 @@ def get_size(conn, p_size):
 
 def get_image(provider, conn, p_image):
     try:
-        if provider == "aws":
+        if provider == "ec2":
             images = conn.list_images(ex_image_ids={p_image})
         else:
             images = conn.list_images()
@@ -189,8 +189,9 @@ def node_action(action, provider, name, location):
 
 
 def is_node_unique(name, prvdr, conn, sect):
-    if prvdr == "eqnx":
-        nodes = conn.list_nodes(sect["project"])
+    if prvdr == "equinixmetal":
+        project = sect["project"]
+        nodes = conn.list_nodes(project)
     else:
         nodes = conn.list_nodes()
 
@@ -202,7 +203,7 @@ def is_node_unique(name, prvdr, conn, sect):
 
 
 def create_node(
-    provider, metro, name, flavor=None, image=None, ssh_key=None, project=None
+    provider, metro, name, size=None, image=None, ssh_key=None, project=None, json=False
 ):
     """Create a node."""
 
@@ -212,14 +213,14 @@ def create_node(
         exit_message(f"Node '{name}' already exists in '{prvdr}:{metro}'")
 
     if prvdr == "equinixmetal":
-        if flavor is None:
-            flavor = sect["flavor"]
+        if size is None:
+            size = sect["size"]
         if image is None:
             image = sect["image"]
         if project is None:
             project = sect["project"]
 
-        create_node_eqnx(name, metro, flavor, image, project)
+        create_node_eqnx(name, metro, size, image, project)
 
     elif prvdr == "ec2":
         if flavor is None:
@@ -342,11 +343,12 @@ def cluster_nodes(cluster_name, providers, metros, node_names):
     return
 
 
-def list_sizes(provider, location=None):
+def list_sizes(provider, metro=None, project=None, json=False):
     """List available node sizes."""
-    prvdr, conn, sect, project = get_connection(provider, location)
+    prvdr, conn, sect, metro, project = get_connection(provider, metro, project)
 
     sizes = conn.list_sizes()
+    sl = []
     for s in sizes:
         price = s.price
         if price is None:
@@ -357,10 +359,12 @@ def list_sizes(provider, location=None):
         bandwidth = s.bandwidth
         if bandwidth is None or str(bandwidth) == "0":
             bandwidth = ""
-        print(
-            f"{str(s.id).ljust(35)} {str(round(ram / 1024)).rjust(6)}  {str(s.disk).rjust(6)}  \
-              {str(bandwidth).rjust(6)} {str(round(price, 1)).rjust(5)}"
-        )
+        sl.append([s.id, round(ram/1024), s.disk, bandwidth, round(price, 1)])
+
+    p = PrettyTable()
+    p.field_names = ["ID", "RAM", "Disk", "Bandwidth", "Hourly Price"]
+    p.add_rows(sl)
+    output_table(p, json)
 
 
 def list_locations(provider, metro=None, project=None, json=False):
@@ -385,7 +389,11 @@ def list_nodes(provider, metro=None, project=None, json=False):
         exit_message(f"Invalid provider '{prvdr}' (list_nodes)")
 
     p = PrettyTable()
-    p.field_names = ["Name", "Status", "Flavor", "Country", "Metro", "Location", "PublicIP"]
+    p.field_names = ["Provider", "Name", "Status", "Size", "Country", "Metro", "Location", "Public IP", "Private IP"]
+    p.align["Name"] = "l"
+    p.align["Size"] = "l"
+    p.align["Public IP"] = "l"
+    p.align["Private IP"] = "l"
     p.add_rows(nl)
     output_table(p, json)
 
@@ -405,13 +413,17 @@ def aws_node_list(conn, metro, project, json):
             public_ip = n.public_ips[0]
         except Exception:
             public_ip = ""
+        try:
+            private_ip = n.private_ip[0]
+        except Exception:
+            private_ip = ""
         status = n.state
         location = n.extra["availability"]
-        flavor = n.extra["instance_type"]
+        size = n.extra["instance_type"]
         country = metro[:2]
         metro = metro
-        nl.append([name, status, flavor, country, metro, location, public_ip])
-        # key_name = n.extra['key_name']
+        key_name = n.extra['key_name']
+        nl.append(["ec2", name, status, size, country, metro, location, public_ip, private_ip])
 
     return(nl)
 
@@ -423,12 +435,13 @@ def eqnx_node_list(conn, metro, project, json):
     for n in nodes:
         name = n.name
         public_ip = n.public_ips[0]
-        flavor = str(n.size.id)
+        private_ip = n.private_ips[0]
+        size = str(n.size.id)
         country = str(n.extra["facility"]["metro"]["country"]).lower()
         metro = f"{n.extra['facility']['metro']['name']} ({n.extra['facility']['metro']['code']})"
         location = n.extra["facility"]["code"]
         status = n.state
-        nl.append([name, status, flavor, country, metro, location, public_ip])
+        nl.append(["equinixmetal", name, status, size, country, metro, location, public_ip, private_ip])
 
     return(nl)
 

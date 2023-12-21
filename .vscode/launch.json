@@ -11,7 +11,7 @@
             "type": "python",
             "request": "launch",
             "program": "${file}",
-            "args": ["list-nodes", "ec2"],
+            "args": ["list-sizes", "ec2"],
             "console": "integratedTerminal",
             "justMyCode": true
         }
