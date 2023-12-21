@@ -66,9 +66,12 @@ def get_connection(provider="eqnx", metro=None):
     try:
         Driver = libcloud.compute.providers.get_driver(prvdr)
         if prvdr == "equinixmetal":
-            conn = Driver(sect["api_token"])
+            p1 = sect["api_token"]
+            conn = Driver(p1)
         elif prvdr in ("ec2"):
-            conn = Driver(sect["access_key_id"], sect["secret_access_key"])
+            p1 = sect["access_key_id"]
+            p2 = sect["secret_access_key"]
+            conn = Driver(p1, p2 )
         else:
             exit_message(f"Invalid provider '{prvdr}'")
     except Exception as e:
@@ -382,7 +385,7 @@ def list_nodes(provider, location=None, json=False):
     else:
         exit_message(f"Invalid provider '{prvdr}' (list_nodes)")
 
-    print(nl)
+    return
 
 
 def aws_node_list(conn, json):
@@ -399,10 +402,10 @@ def aws_node_list(conn, json):
             public_ip = "".ljust(15)
         status = n.state.ljust(10)
         location = n.extra["availability"].ljust(15)
-        size = n.extra["instance_type"].ljust(15)
+        flavor = n.extra["instance_type"].ljust(15)
         # key_name = n.extra['key_name']
 
-        print(f"aws   {name}  {public_ip}  {status}  {location}  {size}")
+        print(f"aws   {name}  {public_ip}  {status}  {location}  {flavor}")
 
     return
 
@@ -414,15 +417,15 @@ def eqnx_node_list(conn, project, json):
     for n in nodes:
         name = n.name
         public_ip = n.public_ips[0]
-        size = str(n.size.id)
+        flavor = str(n.size.id)
         country = str(n.extra["facility"]["metro"]["country"]).lower()
         metro = f"{n.extra['facility']['metro']['name']} ({n.extra['facility']['metro']['code']})"
-        az = n.extra["facility"]["code"]
+        location = n.extra["facility"]["code"]
         status = n.state
-        nl.append([name, public_ip, size, country, metro, az, status])
+        nl.append([name, public_ip, flavor, country, metro, location, status])
 
     p = PrettyTable()
-    p.field_names = ["Name", "Public IP", "Size", "Country", "Metro", "AZ", "Status"]
+    p.field_names = ["Name", "PublicIP", "Flavor", "Country", "Metro", "Location", "Status"]
     p.add_rows(nl)
     output_table(p, json)
     return
