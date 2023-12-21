@@ -1,6 +1,6 @@
 # multicloud-cli
 
-![banner](alc-banner2.png)
+![banner](img/mcc-banner2.png)
 
 Rule the Multi-cloud with this CLI over [apache-libcloud](https://libcloud.apache.org)
 

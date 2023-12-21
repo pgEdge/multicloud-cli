@@ -1,1 +1,3 @@
-venv
+.venv
+fire/__pycache__/
+fire/console/__pycache__/

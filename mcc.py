@@ -2,23 +2,21 @@
 
 #  Copyright 2023-2024 PGEDGE  All rights reserved. #
 
-import configparser
-import os
-import sys
-import logging
+import os, sys, configparser, logging
 
 import fire
-
 import libcloud
+
 import termcolor
 from libcloud.compute.types import Provider
 from prettytable import PrettyTable
-##from loghelpers import bcolours, characters
+
+CONFIG = f"{os.getenv('HOME')}/.multicloud.conf"
 
 PROVIDERS = \
     [
-        ["equinixmetal", "eqnx", Provider.EQUINIXMETAL, "Equinix Metal"],
-        ["ec2",          "aws",  Provider.EC2,          "Amazon Web Services"],
+        ["equinixmetal", "Equinix Metal"],
+        ["ec2",          "Amazon Web Services"],
     ]
 
 
@@ -29,15 +27,14 @@ def exit_message(msg, rc=1):
         message(msg)
     os._exit(rc)
 
+
 def message(msg):
     print(msg)
 
 
 def load_config(section):
-    HOME = os.getenv("HOME")
-    file_nm = f"{HOME}/.libcloud.conf"
-    if not os.path.exists(file_nm):
-        exit_message(f"config file {file_nm} missing")
+    if not os.path.exists(CONFIG):
+        exit_message(f"config file {CONFIG} missing")
     try:
         config = configparser.ConfigParser()		
         rc = config.read(file_nm)
@@ -436,7 +433,7 @@ def list_providers(json=False):
 
     p = PrettyTable()
 
-    p.field_names = ["Provider", "Alias", "Constant", "Description"]
+    p.field_names = ["Provider", "Description"]
     p.add_rows(PROVIDERS)
     output_table(p, json)
     return
