@@ -2,17 +2,18 @@
 
 #  Copyright 2023-2024 PGEDGE  All rights reserved. #
 
+import configparser
 import os
 import sys
-import configparser
+import logging
 
 import fire
 
 import libcloud
+import termcolor
 from libcloud.compute.types import Provider
-
-import prettytable
 from prettytable import PrettyTable
+##from loghelpers import bcolours, characters
 
 PROVIDERS = \
     [
@@ -22,8 +23,11 @@ PROVIDERS = \
 
 
 def exit_message(msg, rc=1):
-    message(msg)
-    sys.exit(rc)
+    if rc == 1:
+        message(f"ERROR: {msg}")
+    else:
+        message(msg)
+    os._exit(rc)
 
 def message(msg):
     print(msg)
@@ -32,12 +36,15 @@ def message(msg):
 def load_config(section):
     HOME = os.getenv("HOME")
     file_nm = f"{HOME}/.libcloud.conf"
+    if not os.path.exists(file_nm):
+        exit_message(f"config file {file_nm} missing")
     try:
         config = configparser.ConfigParser()		
         rc = config.read(file_nm)
-        return(config[section])
-    except Exception as e:
-        exit_message(str(e), 1)
+        sect = config[section]
+        return(sect)
+    except Exception:
+        exit_message(f"missing section '{section}' in config file '{file_nm}'")
 
     return None
 
@@ -363,22 +370,22 @@ def list_locations(provider, location=None):
         print(f"{ll.name.ljust(15)} {ll.id}")
 
 
-def list_nodes(provider, location=None):
+def list_nodes(provider, location=None, json=False):
     """List nodes."""
     prvdr, conn, sect = get_connection(provider, location)
 
     nl = []
     if prvdr in ("eqnx", "equinixmetal"):
-        nl = eqnx_node_list(conn, sect["project"])
+        nl = eqnx_node_list(conn, sect["project"], json)
     elif prvdr in ("aws", "ec2"):
-        nl = aws_node_list(conn)
+        nl = aws_node_list(conn, json)
     else:
         exit_message(f"Invalid provider '{prvdr}' (list_nodes)")
 
     print(nl)
 
 
-def aws_node_list(conn):
+def aws_node_list(conn, json):
     try:
         nodes = conn.list_nodes()
     except Exception as e:
@@ -400,7 +407,7 @@ def aws_node_list(conn):
     return
 
 
-def eqnx_node_list(conn, project):
+def eqnx_node_list(conn, project, json):
     nodes = conn.list_nodes(project)
 
     nl = []
@@ -412,13 +419,13 @@ def eqnx_node_list(conn, project):
         metro = f"{n.extra['facility']['metro']['name']} ({n.extra['facility']['metro']['code']})"
         az = n.extra["facility"]["code"]
         status = n.state
-        nl.add_row(name, public_ip, size, country, metro, az, status)
+        nl.append([name, public_ip, size, country, metro, az, status])
 
-        # crd = n.extra["facility"]["address"]["coordinates"]
-        # coordinates = f"{round(float(crd['latitude']), 3)},{round(float(crd['latitude']), 3)}"
-
-    return(nl)
-    print(f"eqnx  {name:<16}  {public_ip:<15}  {status:<10}  {country:<2}  {metro:<14}  {az:<10}  {size:<15}")
+    p = PrettyTable()
+    p.field_names = ["Name", "Public IP", "Size", "Country", "Metro", "AZ", "Status"]
+    p.add_rows(nl)
+    output_table(p, json)
+    return
 
 
 def list_providers(json=False):
@@ -428,7 +435,6 @@ def list_providers(json=False):
 
     p.field_names = ["Provider", "Alias", "Constant", "Description"]
     p.add_rows(PROVIDERS)
-
     output_table(p, json)
     return
 
