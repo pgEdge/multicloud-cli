@@ -37,11 +37,11 @@ def load_config(section):
         exit_message(f"config file {CONFIG} missing")
     try:
         config = configparser.ConfigParser()		
-        rc = config.read(file_nm)
+        rc = config.read(CONFIG)
         sect = config[section]
         return(sect)
     except Exception:
-        exit_message(f"missing section '{section}' in config file '{file_nm}'")
+        exit_message(f"missing section '{section}' in config file '{CONFIG}'")
 
     return None
 
@@ -56,7 +56,7 @@ def get_provider(prvdr):
     exit_message(f"Invalid Provider {prvdr}")
 
 
-def get_connection(provider="eqnx", metro=None):
+def get_connection(provider="equinixmetal", metro=None, project=None):
     prvdr = get_provider(provider)
     sect = load_config(prvdr)
 
@@ -65,20 +65,24 @@ def get_connection(provider="eqnx", metro=None):
         if prvdr == "equinixmetal":
             p1 = sect["api_token"]
             conn = Driver(p1)
+            if not project:
+                project = sect["project"]
         elif prvdr in ("ec2"):
             p1 = sect["access_key_id"]
             p2 = sect["secret_access_key"]
-            conn = Driver(p1, p2 )
+            if not metro:
+                metro = sect["metro"]
+            conn = Driver(p1, p2, region=metro )
         else:
             exit_message(f"Invalid provider '{prvdr}'")
     except Exception as e:
         exit_message(str(e), 1)
 
-    return (prvdr, conn, sect)
+    return (prvdr, conn, sect, metro, project)
 
 
 def get_location(location):
-    prvdr, conn, section = get_connection()
+    prvdr, conn, section, metro = get_connection()
 
     locations = conn.list_locations()
     for ll in locations:
@@ -114,7 +118,7 @@ def get_image(provider, conn, p_image):
 
 
 def get_node_values(provider, metro, name):
-    prvdr, conn, section = get_connection(provider, metro)
+    prvdr, conn, section, metro, project = get_connection(provider, metro)
     nd = get_node(conn, name)
     if not nd:
         return None, None, None, None, None
@@ -156,7 +160,7 @@ def destroy_node(provider, name, metro):
 
 
 def node_action(action, provider, name, location):
-    prvdr, conn, section = get_connection(provider, location)
+    prvdr, conn, section, metro, project = get_connection(provider, location)
 
     nd = get_node(conn, name)
     if nd:
@@ -198,28 +202,28 @@ def is_node_unique(name, prvdr, conn, sect):
 
 
 def create_node(
-    provider, metro, name, size=None, image=None, keyname=None, project=None
+    provider, metro, name, flavor=None, image=None, ssh_key=None, project=None
 ):
     """Create a node."""
 
-    prvdr, conn, sect = get_connection(provider, metro)
+    prvdr, conn, sect, metro, project = get_connection(provider, metro, project)
 
     if not is_node_unique(name, prvdr, conn, sect):
         exit_message(f"Node '{name}' already exists in '{prvdr}:{metro}'")
 
-    if prvdr == "eqnx":
-        if size is None:
-            size = sect["size"]
+    if prvdr == "equinixmetal":
+        if flavor is None:
+            flavor = sect["flavor"]
         if image is None:
             image = sect["image"]
         if project is None:
             project = sect["project"]
 
-        create_node_eqnx(name, metro, size, image, project)
+        create_node_eqnx(name, metro, flavor, image, project)
 
-    elif prvdr == "aws":
-        if size is None:
-            size = sect["size"]
+    elif prvdr == "ec2":
+        if flavor is None:
+            flavor = sect["flavor"]
         if image is None:
             my_image = f"image-{metro}"
             print(sect)
@@ -229,7 +233,7 @@ def create_node(
         if project:
             exit_message("'project' is not a valid AWS parm", 1)
 
-        create_node_aws(name, metro, size, image, keyname)
+        create_node_aws(name, metro, flavor, image, ssh_key)
 
     else:
         exit_message(f"Invalid provider '{prvdr}' (create_node)")
@@ -237,29 +241,29 @@ def create_node(
     return
 
 
-def create_node_aws(name, region, size, image, keyname):
-    prvdr, conn, section = get_connection("aws", region)
-    sz = get_size(conn, size)
+def create_node_aws(name, metro, flavor, image, keyname):
+    prvdr, conn, section, metro, project = get_connection("aws", metro)
+    sz = get_size(conn, flavor)
     im = get_image("aws", conn, image)
 
     try:
-        conn.create_node(name=name, image=im, size=sz, ex_keyname=keyname)
+        conn.create_node(name=name, image=im, size=flavor, ex_keyname=keyname)
     except Exception as e:
         exit_message(str(e), 1)
 
     return
 
 
-def create_node_eqnx(name, location, size, image, project):
-    prvdr, conn, section = get_connection("eqnx")
-    sz = get_size(conn, size)
+def create_node_eqnx(name, location, flavor, image, project):
+    prvdr, conn, section, metro, project = get_connection("eqnx")
+    sz = get_size(conn, flavor)
     im = get_image("eqnx", conn, image)
 
     loct = get_location(location)
 
     try:
         conn.create_node(
-            name=name, image=im, size=sz, location=loct, ex_project_id=project
+            name=name, image=im, size=flavor, location=loct, ex_project_id=project
         )
     except Exception as e:
         exit_message(str(e), 1)
@@ -335,14 +339,12 @@ def cluster_nodes(cluster_name, providers, metros, node_names):
 
         i = i + 1
 
-    # n1 = get_node(providers[0], locations[0], node_names[0])
-    # n2 = get_node(providers[1], locations[1], node_names[1])
     return
 
 
 def list_sizes(provider, location=None):
     """List available node sizes."""
-    prvdr, conn, sect = get_connection(provider, location)
+    prvdr, conn, sect, project = get_connection(provider, location)
 
     sizes = conn.list_sizes()
     for s in sizes:
@@ -361,53 +363,60 @@ def list_sizes(provider, location=None):
         )
 
 
-def list_locations(provider, location=None):
+def list_locations(provider, metro=None, project=None, json=False):
     """List available locations."""
-    prvdr, conn, sect = get_connection(provider, location)
+    prvdr, conn, sect, metro, project = get_connection(provider, metro, project, json)
 
     locations = conn.list_locations()
     for ll in locations:
         print(f"{ll.name.ljust(15)} {ll.id}")
 
 
-def list_nodes(provider, location=None, json=False):
+def list_nodes(provider, metro=None, project=None, json=False):
     """List nodes."""
-    prvdr, conn, sect = get_connection(provider, location)
+    prvdr, conn, sect, metro, project = get_connection(provider, metro, project)
 
     nl = []
-    if prvdr in ("eqnx", "equinixmetal"):
-        nl = eqnx_node_list(conn, sect["project"], json)
-    elif prvdr in ("aws", "ec2"):
-        nl = aws_node_list(conn, json)
+    if prvdr in ("equinixmetal"):
+        nl = eqnx_node_list(conn, metro, project, json)
+    elif prvdr in ("ec2"):
+        nl = aws_node_list(conn, metro, project, json)
     else:
         exit_message(f"Invalid provider '{prvdr}' (list_nodes)")
+
+    p = PrettyTable()
+    p.field_names = ["Name", "Status", "Flavor", "Country", "Metro", "Location", "PublicIP"]
+    p.add_rows(nl)
+    output_table(p, json)
 
     return
 
 
-def aws_node_list(conn, json):
+def aws_node_list(conn, metro, project, json):
     try:
         nodes = conn.list_nodes()
     except Exception as e:
         exit_message(str(e), 1)
 
+    nl = []
     for n in nodes:
-        name = n.name.ljust(16)
+        name = n.name
         try:
-            public_ip = n.public_ips[0].ljust(15)
+            public_ip = n.public_ips[0]
         except Exception:
-            public_ip = "".ljust(15)
-        status = n.state.ljust(10)
-        location = n.extra["availability"].ljust(15)
-        flavor = n.extra["instance_type"].ljust(15)
+            public_ip = ""
+        status = n.state
+        location = n.extra["availability"]
+        flavor = n.extra["instance_type"]
+        country = metro[:2]
+        metro = metro
+        nl.append([name, status, flavor, country, metro, location, public_ip])
         # key_name = n.extra['key_name']
 
-        print(f"aws   {name}  {public_ip}  {status}  {location}  {flavor}")
-
-    return
+    return(nl)
 
 
-def eqnx_node_list(conn, project, json):
+def eqnx_node_list(conn, metro, project, json):
     nodes = conn.list_nodes(project)
 
     nl = []
@@ -419,16 +428,12 @@ def eqnx_node_list(conn, project, json):
         metro = f"{n.extra['facility']['metro']['name']} ({n.extra['facility']['metro']['code']})"
         location = n.extra["facility"]["code"]
         status = n.state
-        nl.append([name, public_ip, flavor, country, metro, location, status])
+        nl.append([name, status, flavor, country, metro, location, public_ip])
 
-    p = PrettyTable()
-    p.field_names = ["Name", "PublicIP", "Flavor", "Country", "Metro", "Location", "Status"]
-    p.add_rows(nl)
-    output_table(p, json)
-    return
+    return(nl)
 
 
-def list_providers(json=False):
+def list_providers(metro=None, project=None, json=False):
     """List supported cloud providers."""
 
     p = PrettyTable()
