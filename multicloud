@@ -1,0 +1,31 @@
+#!/usr/bin/env python3
+
+#  Copyright 2023-2024 PGEDGE  All rights reserved. #
+
+import fire
+from prettytable import PrettyTable
+
+import util
+
+
+def list_providers(json=False):
+    """List supported cloud providers."""
+
+    if json:
+        util.output_json(util.PROVIDERS)
+        return
+    
+    p = PrettyTable()
+    p.field_names = ["Provider", "Description"]
+    p.add_rows(util.PROVIDERS)
+    print(p)
+    
+    return
+
+
+if __name__ == "__main__":
+    fire.Fire(
+        {
+            "list-providers": list_providers,
+        }
+    )

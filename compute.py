@@ -388,25 +388,9 @@ def equinixmetal_node_list(conn, metro, project, json):
     return(nl)
 
 
-def list_providers(json=False):
-    """List supported cloud providers."""
-
-    if json:
-        util.output_json(util.PROVIDERS)
-        return
-
-    p = PrettyTable()
-    p.field_names = ["Provider", "Description"]
-    p.add_rows(util.PROVIDERS)
-    print(p)
-
-    return
-
-
 if __name__ == "__main__":
     fire.Fire(
         {
-            "list-providers": list_providers,
             "list-nodes":     list_nodes,
             "list-locations": list_locations,
             "list-sizes":     list_sizes,
