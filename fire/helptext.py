@@ -53,7 +53,8 @@ ENDC = '\033[0m'
 BOLD = '\033[1m'
 ITALIC = '\033[3m'
 UNDERSCORE = '\033[4m'
-MD_DIR = os.getenv("pgeMdDir", None)
+
+MD_DIR = os.getenv("MdDir", None)
 if MD_DIR:
   os.system("mkdir -p " + str(MD_DIR))
 MD_FILE = ""
@@ -227,25 +228,11 @@ def _SynopsisSection(component, actions_grouped_by_kind, spec, metadata,
     sfx = str(cc_lst[1])
   txt = text
 
-  prfx = "pgedge"
-  if "spock.py" in txt:
-    prfx = "spock"
-  elif "um.py" in txt:
-    prfx = "um"
-  elif "service.py" in txt:
-    prfx = "service"
-  elif "cluster.py" in txt:
-    prfx = "cluster"
-  elif "ace.py" in txt:
-    prfx = "ace"
-  elif "secure.py" in txt:
-    prfx = "secure"
-  elif "db.py" in txt:
-    prfx = "db"
-  elif "cloud.py" in txt:
-    prfx = "cloud"
-  elif "firewalld.py" in txt:
-    prfx = "firewalld"
+  prfx = "multicloud"
+  if "mcc.py" in txt:
+    prfx = "mcc"
+  elif "compute.py" in txt:
+    prfx = "compute"
 
   txt = txt.replace(f"{prfx}.py", f"./ctl {prfx}")
 
