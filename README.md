@@ -2,15 +2,16 @@
 
 ![banner](img/mcc-banner2.png)
 
-Rule the Multi-cloud with this CLI over [apache-libcloud](https://libcloud.apache.org)
+A CLI to Rule the Multi-cloud
 
 
 ## Guiding Principles
 
-  - this CLI is a pretty thin veneer over the apache-libcloud sdk
+  - follow [apache-libcloud](https://libcloud.apache.org) sdk as 
+    much as reasonable
 
-  - use agnostic and consistent field naming across providers such as (metro, location, flavor) instead 
-        of (region, avaialability_zone, size)
+  - use agnostic and consistent field naming across providers such 
+     as metro & location instead of region & availability_zone 
 
   - pure python and KISS
 
@@ -19,9 +20,7 @@ Rule the Multi-cloud with this CLI over [apache-libcloud](https://libcloud.apach
 
 ## What's next
 
-- support for `projects` that allow us to define multi-cloud connections in our ~/.libcloud.conf
+- `cluster` definition json file for grouping multi-cloud nodes
 
-- a simple `cluster` definition json file that allows us to name & group multi-cloud nodes in a `project`
-
-- add support for `openstack`, `gcp` and `azure`
+- support for `openstack`, `gcp` and `azure`
 

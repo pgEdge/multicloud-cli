@@ -1,7 +1,12 @@
-apache-libcloud>=3.8.0
 prettytable>=3.9.0
 
-six
-termcolor
+## apache-libcloud==3.8.0 ##
+certifi==2023.11.17
+charset-normalizer==3.3.2
+idna==3.6
+requests==2.31.0
+urllib3==2.1.0
 
-
+## fire==0.5.0 ############
+six==1.16.0
+termcolor==2.4.0
