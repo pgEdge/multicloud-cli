@@ -14,10 +14,10 @@ import util
 
 #import termcolor
 from libcloud.compute.types import Provider
-#from prettytable import PrettyTable
+from prettytable import PrettyTable
 
-def get_location(location):
-    prvdr, conn, section, metro = util.get_connection()
+def get_location(provider, location):
+    conn, section, metro, project = util.get_connection(provider)
 
     locations = conn.list_locations()
     for ll in locations:
@@ -53,7 +53,7 @@ def get_image(provider, conn, p_image):
 
 
 def get_node_values(provider, metro, name):
-    prvdr, conn, section, metro, project = util.get_connection(provider, metro)
+    conn, section, metro, project = util.get_connection(provider, metro)
     nd = get_node(conn, name)
     if not nd:
         return None, None, None, None, None
@@ -95,7 +95,7 @@ def destroy_node(provider, name, metro):
 
 
 def node_action(action, provider, name, location):
-    prvdr, conn, section, metro, project = util.get_connection(provider, location)
+    conn, section, metro, project = util.get_connection(provider, location)
 
     nd = get_node(conn, name)
     if nd:
@@ -142,12 +142,12 @@ def create_node(
 ):
     """Create a node."""
 
-    prvdr, conn, sect, metro, project = util.get_connection(provider, metro, project)
+    conn, sect, metro, project = util.get_connection(provider, metro, project)
 
     if not is_node_unique(name, prvdr, conn, sect):
         util.exit_message(f"Node '{name}' already exists in '{prvdr}:{metro}'")
 
-    if prvdr == "equinixmetal":
+    if provider == "equinixmetal":
         if size is None:
             size = sect["size"]
         if image is None:
@@ -157,19 +157,18 @@ def create_node(
 
         create_node_eqnx(name, metro, size, image, project)
 
-    elif prvdr == "ec2":
-        if flavor is None:
-            flavor = sect["flavor"]
+    elif provider == "ec2":
+        if size is None:
+            size = sect["size"]
         if image is None:
             my_image = f"image-{metro}"
-            print(sect)
             image = sect[my_image]
         if keyname is None:
             keyname = sect["keyname"]
         if project:
             exit_message("'project' is not a valid AWS parm", 1)
 
-        create_node_aws(name, metro, flavor, image, ssh_key)
+        create_node_ec2(name, metro, flavor, image, ssh_key)
 
     else:
         util.exit_message(f"Invalid provider '{prvdr}' (create_node)")
@@ -177,8 +176,8 @@ def create_node(
     return
 
 
-def create_node_aws(name, metro, size, image, keyname):
-    prvdr, conn, section, metro, project = util.get_connection("aws", metro)
+def create_node_ec2(name, metro, size, image, keyname):
+    conn, section, metro, project = util.get_connection("ec2", metro)
     sz = get_size(conn, size)
     im = get_image("aws", conn, image)
 
@@ -191,9 +190,9 @@ def create_node_aws(name, metro, size, image, keyname):
 
 
 def create_node_eqnx(name, location, size, image, project):
-    prvdr, conn, section, metro, project = util.get_connection("eqnx")
+    prvdr, conn, section, metro, project = util.get_connection("equinixmetal")
     sz = get_size(conn, size)
-    im = get_image("eqnx", conn, image)
+    im = get_image("equinixmetal", conn, image)
 
     loct = get_location(location)
 
@@ -261,7 +260,7 @@ def cluster_nodes(cluster_name, providers, metros, node_names):
     i = 0
     while i < node_kount:
         message(f"\n## {providers[i]}, {metros[i]}, {node_names[i]}")
-        prvdr, conn, section = get_connection(providers[i], metros[i])
+        conn, section, metro, project = get_connection(providers[i], metros[i])
 
         name, public_ip, status, metro, size = get_node_values(
             providers[i], metros[i], node_names[i]
@@ -280,7 +279,7 @@ def cluster_nodes(cluster_name, providers, metros, node_names):
 
 def list_sizes(provider, metro=None, project=None, json=False):
     """List available node sizes."""
-    prvdr, conn, sect, metro, project = get_connection(provider, metro, project)
+    conn, sect, metro, project = get_connection(provider, metro, project)
 
     sizes = conn.list_sizes()
     sl = []
@@ -296,15 +295,19 @@ def list_sizes(provider, metro=None, project=None, json=False):
             bandwidth = ""
         sl.append([s.id, round(ram/1024), s.disk, bandwidth, round(price, 1)])
 
+    if json:
+        util.output_json(sl)
+        return
+
     p = PrettyTable()
     p.field_names = ["ID", "RAM", "Disk", "Bandwidth", "Hourly Price"]
-    p.add_rows(sl)
-    util.output_table(p, json)
+    p.add_rows(nl)
+    print(p)
 
 
 def list_locations(provider, metro=None, project=None, json=False):
     """List available locations."""
-    prvdr, conn, sect, metro, project = get_connection(provider, metro, project, json)
+    conn, sect, metro, project = get_connection(provider, metro, project)
 
     locations = conn.list_locations()
     for ll in locations:
@@ -313,15 +316,19 @@ def list_locations(provider, metro=None, project=None, json=False):
 
 def list_nodes(provider, metro=None, project=None, json=False):
     """List nodes."""
-    prvdr, conn, sect, metro, project = get_connection(provider, metro, project)
+    conn, sect, metro, project = util.get_connection(provider, metro, project)
 
     nl = []
-    if prvdr in ("equinixmetal"):
-        nl = eqnx_node_list(conn, metro, project, json)
-    elif prvdr in ("ec2"):
-        nl = aws_node_list(conn, metro, project, json)
+    if provider == ("equinixmetal"):
+        nl = equinixmetal_node_list(conn, metro, project, json)
+    elif provider == ("ec2"):
+        nl = ec2_node_list(conn, metro, project, json)
     else:
-        util.exit_message(f"Invalid provider '{prvdr}' (list_nodes)")
+        util.exit_message(f"Invalid provider '{provider}' (list_nodes)")
+
+    if json:
+      util.output_json(nl)
+      return
 
     p = PrettyTable()
     p.field_names = ["Provider", "Name", "Status", "Size", "Country", "Metro", "Location", "Public IP", "Private IP"]
@@ -330,12 +337,12 @@ def list_nodes(provider, metro=None, project=None, json=False):
     p.align["Public IP"] = "l"
     p.align["Private IP"] = "l"
     p.add_rows(nl)
-    util.output_table(p, json)
+    print(p)
 
     return
 
 
-def aws_node_list(conn, metro, project, json):
+def ec2_node_list(conn, metro, project, json):
     try:
         nodes = conn.list_nodes()
     except Exception as e:
@@ -363,7 +370,7 @@ def aws_node_list(conn, metro, project, json):
     return(nl)
 
 
-def eqnx_node_list(conn, metro, project, json):
+def equinixmetal_node_list(conn, metro, project, json):
     nodes = conn.list_nodes(project)
 
     nl = []
@@ -384,7 +391,14 @@ def eqnx_node_list(conn, metro, project, json):
 def list_providers(json=False):
     """List supported cloud providers."""
 
-    util.output(util.PROVIDERS, ["Provider", "Description"], json)
+    if json:
+        util.output_json(util.PROVIDERS)
+        return
+
+    p = PrettyTable()
+    p.field_names = ["Provider", "Description"]
+    p.add_rows(util.PROVIDERS)
+    print(p)
 
     return
 
