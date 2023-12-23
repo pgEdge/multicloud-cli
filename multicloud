@@ -2,10 +2,36 @@
 
 #  Copyright 2023-2024 PGEDGE  All rights reserved. #
 
+
+import sys
+import os
+
+sys.path.append(os.path.join(os.path.dirname(__file__), "lib"))
+
+
 import fire
 from prettytable import PrettyTable
 
 import util
+
+
+def fire_away(module):
+    if not os.path.exists(module):
+        util.exit_message(f"'{module}' module not available.")
+   
+    isJson = False 
+    cmd = f"python3 {module}"
+    for a in range(2, len(sys.argv)):
+        if a == "--json":
+            isJson = True
+
+        cmd = f'{cmd} "{sys.argv[a]}"'
+
+    # if not isJson:
+    #     print(f"# {cmd}")
+
+    rc = os.system(cmd)
+    sys.exit(rc)
 
 
 def list_providers(json=False):
@@ -23,9 +49,51 @@ def list_providers(json=False):
     return
 
 
+def compute():
+    """Provision and Control VM's (use './compute --help' for more"""
+
+    rc = fire_away("compute")
+    return(rc)
+
+
+def backup():
+  """Coming Soon!"""
+
+  rc = fire_away("backup")
+  return(rc)
+
+
+def storage(*parms):
+  """Coming Soon!"""
+
+  rc = fire_away("backup")
+  return
+
+
+def container(*parms):
+  """Coming Soon!"""
+  return
+
+
+def dns(*parms):
+  """Coming Soon!"""
+  return
+
+
+def load_balancer(*parms):
+  """Coming Soon!"""
+  return
+
+
 if __name__ == "__main__":
     fire.Fire(
         {
             "list-providers": list_providers,
+            "compute":        compute,
+            "backup":         backup,
+            "storage":        storage,
+            "container":      container,
+            "dns":            dns,
+            "load-balancer":  load_balancer,
         }
     )

@@ -2,9 +2,13 @@
 
 #  Copyright 2023-2024 PGEDGE  All rights reserved. #
 
+
 import os
 import sys
 import configparser
+
+sys.path.append(os.path.join(os.path.dirname(__file__), "lib"))
+
 # import logging
 
 
