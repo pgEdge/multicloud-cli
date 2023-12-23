@@ -279,7 +279,7 @@ def cluster_nodes(cluster_name, providers, metros, node_names):
 
 def list_sizes(provider, metro=None, project=None, json=False):
     """List available node sizes."""
-    conn, sect, metro, project = get_connection(provider, metro, project)
+    conn, sect, metro, project = util.get_connection(provider, metro, project)
 
     sizes = conn.list_sizes()
     sl = []
@@ -305,13 +305,26 @@ def list_sizes(provider, metro=None, project=None, json=False):
     print(p)
 
 
-def list_locations(provider, metro=None, project=None, json=False):
+def list_locations(provider, metro, project=None, json=False):
     """List available locations."""
-    conn, sect, metro, project = get_connection(provider, metro, project)
+    conn, sect, metro, project = util.get_connection(provider, metro, project)
 
+    ll = []
     locations = conn.list_locations()
-    for ll in locations:
-        print(f"{ll.name.ljust(15)} {ll.id}")
+    for l in locations:
+        ll.append([provider, metro, l.name])
+
+    if json:
+      util.output_json(ll)
+      return
+
+    p = PrettyTable()
+    p.field_names = ["Provider", "Metro", "Location"]
+    p.align["Location"] = "l"
+    p.add_rows(ll)
+    print(p)
+
+    return
 
 
 def list_nodes(provider, metro=None, project=None, json=False):
