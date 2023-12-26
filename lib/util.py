@@ -2,15 +2,16 @@
 
 #  Copyright 2023-2024 PGEDGE  All rights reserved. #
 
-import os
-import sys
-import configparser
-import json as jjson
+import os, sys, configparser, sqlite3
 
+os.chdir(os.path.dirname(__file__))
+sys.path.append(os.path.join(os.path.dirname(__file__), "lib"))
+
+import json as jjson
 import libcloud
+from libcloud.compute.types import Provider
 
 import termcolor
-from libcloud.compute.types import Provider
 
 CONFIG = f"{os.getenv('HOME')}/.multicloud.conf"
 
@@ -75,4 +76,9 @@ def output_json(tbl):
     print(tbl)
 
     return
+
+
+# MAINLINE ################################################################
+cL = sqlite3.connect("../conf/multicloud.db", check_same_thread=False)
+
 

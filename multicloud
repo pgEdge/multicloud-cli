@@ -3,15 +3,13 @@
 #  Copyright 2023-2024 PGEDGE  All rights reserved. #
 
 
-import sys
-import os
+import os, sys
 
+os.chdir(os.path.dirname(__file__))
 sys.path.append(os.path.join(os.path.dirname(__file__), "lib"))
-
 
 import fire
 from prettytable import PrettyTable
-
 import util
 
 
@@ -50,7 +48,7 @@ def list_providers(json=False):
 
 
 def compute():
-    """Provision and Control VM's (use './compute --help' for more"""
+    """Provision &/or Control VM's (use './compute --help' for more"""
 
     rc = fire_away("compute")
     return(rc)
@@ -66,22 +64,28 @@ def backup():
 def storage(*parms):
   """Coming Soon!"""
 
-  rc = fire_away("backup")
+  rc = fire_away("storage")
   return
 
 
 def container(*parms):
   """Coming Soon!"""
+
+  rc = fire_away("container")
   return
 
 
 def dns(*parms):
   """Coming Soon!"""
+
+  rc = fire_away("dns")
   return
 
 
 def load_balancer(*parms):
   """Coming Soon!"""
+
+  rc = fire_away("loadbalancer")
   return
 
 
