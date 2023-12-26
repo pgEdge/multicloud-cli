@@ -297,15 +297,20 @@ def list_sizes(provider, metro=None, project=None, json=False):
         bandwidth = s.bandwidth
         if bandwidth is None or str(bandwidth) == "0":
             bandwidth = ""
-        sl.append([s.id, round(ram/1024), s.disk, bandwidth, round(price, 1)])
+        sl.append([provider, metro, s.id, round(ram/1024), s.disk, bandwidth, round(price, 2)])
 
     if json:
         util.output_json(sl)
         return
 
     p = PrettyTable()
-    p.field_names = ["ID", "RAM", "Disk", "Bandwidth", "Hourly Price"]
-    p.add_rows(nl)
+    p.field_names = ["Provider", "Metro", "ID", "RAM", "Disk", "Bandwidth", "Hourly Price"]
+    p.add_rows(sl)
+    p.align["ID"] = "l"
+    p.align["RAM"] = "r"
+    p.align["Disk"] = "r"
+    p.align["Bandwidth"] = "r"
+    p.align["Hourly Price"] = "r"
     print(p)
 
 
