@@ -297,20 +297,21 @@ def list_sizes(provider, metro=None, project=None, json=False):
         bandwidth = s.bandwidth
         if bandwidth is None or str(bandwidth) == "0":
             bandwidth = ""
-        sl.append([provider, metro, s.id, round(ram/1024), s.disk, bandwidth, round(price, 2)])
+        sl.append([provider, metro, s.id, round(ram/1024), s.disk, bandwidth, price])
 
     if json:
         util.output_json(sl)
         return
 
     p = PrettyTable()
-    p.field_names = ["Provider", "Metro", "ID", "RAM", "Disk", "Bandwidth", "Hourly Price"]
+    p.field_names = ["Provider", "Metro", "Size", "RAM", "Disk", "Bandwidth", "Price"]
     p.add_rows(sl)
-    p.align["ID"] = "l"
+    p.float_format = ".2"
+    p.align["Size"] = "l"
     p.align["RAM"] = "r"
     p.align["Disk"] = "r"
     p.align["Bandwidth"] = "r"
-    p.align["Hourly Price"] = "r"
+    p.align["Price"] = "r"
     print(p)
 
 
@@ -353,8 +354,8 @@ def list_nodes(provider, metro=None, project=None, json=False):
       return
 
     p = PrettyTable()
-    p.field_names = ["Provider", "Name", "Status", "Size", "Country", "Metro", "Location", "Public IP", "Private IP"]
-    p.align["Name"] = "l"
+    p.field_names = ["Provider", "Node", "Status", "Size", "Country", "Metro", "Location", "Public IP", "Private IP"]
+    p.align["Node"] = "l"
     p.align["Size"] = "l"
     p.align["Public IP"] = "l"
     p.align["Private IP"] = "l"
@@ -372,7 +373,7 @@ def ec2_node_list(conn, metro, project, json):
 
     nl = []
     for n in nodes:
-        name = n.name
+        node = n.name
         try:
             public_ip = n.public_ips[0]
         except Exception:
@@ -387,7 +388,7 @@ def ec2_node_list(conn, metro, project, json):
         country = metro[:2]
         metro = metro
         key_name = n.extra['key_name']
-        nl.append(["ec2", name, status, size, country, metro, location, public_ip, private_ip])
+        nl.append(["ec2", node, status, size, country, metro, location, public_ip, private_ip])
 
     return(nl)
 
@@ -397,7 +398,7 @@ def equinixmetal_node_list(conn, metro, project, json):
 
     nl = []
     for n in nodes:
-        name = n.name
+        node = n.name
         public_ip = n.public_ips[0]
         private_ip = n.private_ips[0]
         size = str(n.size.id)
@@ -405,7 +406,7 @@ def equinixmetal_node_list(conn, metro, project, json):
         metro = f"{n.extra['facility']['metro']['name']} ({n.extra['facility']['metro']['code']})"
         location = n.extra["facility"]["code"]
         status = n.state
-        nl.append(["equinixmetal", name, status, size, country, metro, location, public_ip, private_ip])
+        nl.append(["equinixmetal", node, status, size, country, metro, location, public_ip, private_ip])
 
     return(nl)
 
