@@ -35,41 +35,40 @@ INSERT INTO geos VALUES ('af', 'Africa');
 
 CREATE TABLE countries (
   country      TEXT     NOT NULL PRIMARY KEY,
-  country3     TEXT     NOT NULL,
   geo          TEXT     NOT NULL REFERENCES geos(geo),
   country_nm   TEXT     NOT NULL
 );
-INSERT INTO countries VALUES ('us', 'usa', 'na', 'United States');
-INSERT INTO countries VALUES ('ca', 'can', 'na', 'Canada');
-INSERT INTO countries VALUES ('br', 'bra', 'sa', 'Brazil');
-INSERT INTO countries VALUES ('ir', 'irl', 'eu', 'Ireland');
-INSERT INTO countries VALUES ('gb', 'gbr', 'eu', 'Great Britain');
-INSERT INTO countries VALUES ('de', 'ger', 'eu', 'Germany');
-INSERT INTO countries VALUES ('fr', 'fra', 'eu', 'France');
-INSERT INTO countries VALUES ('it', 'ita', 'eu', 'Italy');
-INSERT INTO countries VALUES ('se', 'swe', 'eu', 'Sweden');
-INSERT INTO countries VALUES ('bh', 'bhr', 'me', 'Bahrain');
-INSERT INTO countries VALUES ('ae', 'are', 'me', 'UAE');
-INSERT INTO countries VALUES ('au', 'aus', 'au', 'Australia');
-INSERT INTO countries VALUES ('za', 'zaf', 'af', 'South Africa');
-INSERT INTO countries VALUES ('jp', 'jpn', 'ap', 'Japan');
-INSERT INTO countries VALUES ('hk', 'hkg', 'ap', 'Hong Kong');
-INSERT INTO countries VALUES ('sg', 'sgp', 'ap', 'Singapore');
-INSERT INTO countries VALUES ('kr', 'kor', 'ap', 'South Korea');
-INSERT INTO countries VALUES ('id', 'idn', 'ap', 'Indonesia');
-INSERT INTO countries VALUES ('in', 'ind', 'ap', 'India');
-INSERT INTO countries VALUES ('nz', 'nzl', 'ap', 'New Zealand');
-INSERT INTO countries VALUES ('cn', 'chn', 'ap', 'China');
-INSERT INTO countries VALUES ('es', 'esp', 'eu', 'Spain');
-INSERT INTO countries VALUES ('il', 'isr', 'me', 'Israel');
-INSERT INTO countries VALUES ('be', 'bel', 'eu', 'Belgium');
-INSERT INTO countries VALUES ('nl', 'ned', 'eu', 'Netherlands');
-INSERT INTO countries VALUES ('fl', 'fin', 'eu', 'Finland');
-INSERT INTO countries VALUES ('tw', 'twn', 'ap', 'Taiwan');
-INSERT INTO countries VALUES ('cl', 'chl', 'sa', 'Chile');
-INSERT INTO countries VALUES ('pl', 'pol', 'eu', 'Poland');
-INSERT INTO countries VALUES ('no', 'nor', 'eu', 'Norway');
-INSERT INTO countries VALUES ('qa', 'qat', 'me', 'Qatar');
+INSERT INTO countries VALUES ('us', 'na', 'United States');
+INSERT INTO countries VALUES ('ca', 'na', 'Canada');
+INSERT INTO countries VALUES ('br', 'sa', 'Brazil');
+INSERT INTO countries VALUES ('ir', 'eu', 'Ireland');
+INSERT INTO countries VALUES ('gb', 'eu', 'Great Britain');
+INSERT INTO countries VALUES ('de', 'eu', 'Germany');
+INSERT INTO countries VALUES ('fr', 'eu', 'France');
+INSERT INTO countries VALUES ('it', 'eu', 'Italy');
+INSERT INTO countries VALUES ('se', 'eu', 'Sweden');
+INSERT INTO countries VALUES ('bh', 'me', 'Bahrain');
+INSERT INTO countries VALUES ('ae', 'me', 'UAE');
+INSERT INTO countries VALUES ('au', 'au', 'Australia');
+INSERT INTO countries VALUES ('za', 'af', 'South Africa');
+INSERT INTO countries VALUES ('jp', 'ap', 'Japan');
+INSERT INTO countries VALUES ('hk', 'ap', 'Hong Kong');
+INSERT INTO countries VALUES ('sg', 'ap', 'Singapore');
+INSERT INTO countries VALUES ('kr', 'ap', 'South Korea');
+INSERT INTO countries VALUES ('id', 'ap', 'Indonesia');
+INSERT INTO countries VALUES ('in', 'ap', 'India');
+INSERT INTO countries VALUES ('nz', 'ap', 'New Zealand');
+INSERT INTO countries VALUES ('cn', 'ap', 'China');
+INSERT INTO countries VALUES ('es', 'eu', 'Spain');
+INSERT INTO countries VALUES ('il', 'me', 'Israel');
+INSERT INTO countries VALUES ('be', 'eu', 'Belgium');
+INSERT INTO countries VALUES ('nl', 'eu', 'Netherlands');
+INSERT INTO countries VALUES ('fl', 'eu', 'Finland');
+INSERT INTO countries VALUES ('tw', 'ap', 'Taiwan');
+INSERT INTO countries VALUES ('cl', 'sa', 'Chile');
+INSERT INTO countries VALUES ('pl', 'eu', 'Poland');
+INSERT INTO countries VALUES ('no', 'eu', 'Norway');
+INSERT INTO countries VALUES ('qa', 'me', 'Qatar');
 
 
 CREATE TABLE airports (
@@ -161,144 +160,151 @@ INSERT INTO airports VALUES ('cbr', 'Canberra',           'au', '',    35.3052, 
 CREATE TABLE regions (
   provider      TEXT  NOT NULL REFERENCES providers(provider),
   airport       TEXT  NOT NULL REFERENCES airports(airport),
-  parent_region TEXT  NOT NULL,
   region        TEXT  NOT NULL,
+  parent_region TEXT  NOT NULL,
   avail_zones   TEXT  NOT NULL,
   active        TEXT  NOT NULL,
   PRIMARY KEY (provider, airport)
 );
-INSERT INTO regions VALUES ('eqn', 'iad', 'Washington DC',  '', 'dc1,dc2,dc3,dc4,dc5,dc6,dc7,dc10,dc11,dc12,dc13,dc14,dc15,dc21,dc97', 'Y');
-INSERT INTO regions VALUES ('eqn', 'bos', 'Boston',         '', 'bo1,bo2', 'Y');
-INSERT INTO regions VALUES ('eqn', 'yow', 'Ottowa',         '', 'ot1', 'Y');
-INSERT INTO regions VALUES ('eqn', 'yul', 'Montreal',       '', 'mt1', 'Y');
-INSERT INTO regions VALUES ('eqn', 'ysj', 'Saint John',     '', 'sj1', 'Y');
+INSERT INTO regions VALUES ('eqn', 'iad', 'Washington DC', '', 'dc1,dc2,dc3,dc4,dc5,dc6,dc7,dc10,dc11,dc12,dc13,dc14,dc15,dc21,dc97', 'Y');
+INSERT INTO regions VALUES ('eqn', 'bos', 'Boston',        '', 'bo1,bo2', 'Y');
+INSERT INTO regions VALUES ('eqn', 'yow', 'Ottowa',        '', 'ot1', 'Y');
+INSERT INTO regions VALUES ('eqn', 'yul', 'Montreal',      '', 'mt1', 'Y');
+INSERT INTO regions VALUES ('eqn', 'ysj', 'Saint John',    '', 'sj1', 'Y');
 
-INSERT INTO regions VALUES ('aws', 'iad', 'us-east-1',      'us-east-1',      'a,b,c,d,e,f', 'Y');
-INSERT INTO regions VALUES ('aws', 'cmh', 'us-east-2',      'us-east-2',      'a,b,c',       'Y');
-INSERT INTO regions VALUES ('aws', 'sfo', 'us-west-1',      'us-west-1',      'a,b,c',       'Y');
-INSERT INTO regions VALUES ('aws', 'pdt', 'us-west-2',      'us-west-2',      'a,b,c,d',     'Y');
-INSERT INTO regions VALUES ('aws', 'mtl', 'ca-central-1',   'ca-central-1',   'a, b',        'Y');
-INSERT INTO regions VALUES ('aws', 'sin', 'ap-southeast-1', 'ap-southeast-1', 'a,b,c',       'Y');
-INSERT INTO regions VALUES ('aws', 'icn', 'ap-northeast-2', 'ap-northeast-2', 'a,b,c',       'Y');
-INSERT INTO regions VALUES ('aws', 'hkg', 'ap-east-1',      'ap-east-1',      'a,b,c',       'Y');
-INSERT INTO regions VALUES ('aws', 'itm', 'ap-northeast-3', 'ap-northeast-3', 'a,b,c',       'Y');
-INSERT INTO regions VALUES ('aws', 'nrt', 'ap-northeast-1', 'ap-northeast-1', 'a,b,c, d',    'Y');
-INSERT INTO regions VALUES ('aws', 'bom', 'ap-south-1',     'ap-south-1',     'a,b,c',       'Y');
-INSERT INTO regions VALUES ('aws', 'dfw', 'us-east-1',      'us-east-1-dfw-1', 'a',          'Y');
-INSERT INTO regions VALUES ('aws', 'den', 'us-west-2',      'us-west-2-den-1', 'a',          'Y');
-INSERT INTO regions VALUES ('aws', 'yyc', 'ca-west-1',      'ca-central-1',   'a, b',        'N');
-INSERT INTO regions VALUES ('aws', 'akl', 'ap-southeast-5', 'ap-southeast-5', 'a,b,c',       'N');
-INSERT INTO regions VALUES ('aws', 'cgk', 'ap-southeast-3', 'ap-southeast-3', 'a,b,c',       'Y');
-INSERT INTO regions VALUES ('aws', 'mel', 'ap-southeast-4', 'ap-southeast-4', 'a,b,c',       'N');
-INSERT INTO regions VALUES ('aws', 'syd', 'ap-southeast-2', 'ap-southeast-2', 'a,b,c',       'Y');
-INSERT INTO regions VALUES ('aws', 'hyd', 'ap-south-2',     'ap-south-2',     'a,b,c',       'N');
-INSERT INTO regions VALUES ('aws', 'gru', 'sa-east-1',      'sa-east-1',      'a,b,c',       'Y');
-INSERT INTO regions VALUES ('aws', 'fra', 'eu-central-1',   'eu-central-1',   'a,b,c',       'Y');
-INSERT INTO regions VALUES ('aws', 'dub', 'eu-west-1',      'eu-west-1',      'a,b,c',       'Y');
-INSERT INTO regions VALUES ('aws', 'lhr', 'eu-west-2',      'eu-west-2',      'a,b,c',       'Y');
-INSERT INTO regions VALUES ('aws', 'mxp', 'eu-south-1',     'eu-south-1',     'a,b,c',       'Y');
-INSERT INTO regions VALUES ('aws', 'cdg', 'eu-west-3',      'eu-west-3',      'a,b,c',       'Y');
-INSERT INTO regions VALUES ('aws', 'mad', 'eu-east-1',      'eu-east-1',      'a,b,c',       'N');
-INSERT INTO regions VALUES ('aws', 'arn', 'eu-north-1',     'eu-north-1',     'a,b,c',       'Y');
-INSERT INTO regions VALUES ('aws', 'zrh', 'eu-central-2',   'eu-central-2',   'a,b,c',       'Y');
-INSERT INTO regions VALUES ('aws', 'pek', 'cn-north-1',     'cn-north-1',     'a,b,c',       'Y');
-INSERT INTO regions VALUES ('aws', 'csx', 'cn-northwest-1', 'cn-northwest-1', 'a,b,c',       'Y');
-INSERT INTO regions VALUES ('aws', 'cpt', 'af-south-1',     'af-south-1',     'a,b,c',       'Y');
-INSERT INTO regions VALUES ('aws', 'bah', 'me-south-1',     'me-south-1',     'a,b,c',       'Y');
-INSERT INTO regions VALUES ('aws', 'tlv', 'me-west-1',      'me-west-1',      'a,b,c',       'N');
-INSERT INTO regions VALUES ('aws', 'auh', 'me-south-2',     'me-south-2',     'a,b,c',       'N');
-INSERT INTO regions VALUES ('aws', 'atl', 'us-east-1',      'us-east-1-atl-1', 'a',          'Y');
-INSERT INTO regions VALUES ('aws', 'bos', 'us-east-1',      'us-east-1-bos-1', 'a',          'Y');
-INSERT INTO regions VALUES ('aws', 'chi', 'us-east-1',      'us-east-1-chi-1', 'a',          'Y');
-INSERT INTO regions VALUES ('aws', 'iah', 'us-east-1',      'us-east-1-iah-1', 'a',          'Y');
-INSERT INTO regions VALUES ('aws', 'mci', 'us-east-1',      'us-east-1-mci-1', 'a',          'Y');
-INSERT INTO regions VALUES ('aws', 'las', 'us-west-2',      'us-west-2-las-1', 'a',          'Y');
-INSERT INTO regions VALUES ('aws', 'lax', 'us-west-2',      'us-west-2-lax-1', 'a,b',        'Y');
-INSERT INTO regions VALUES ('aws', 'mia', 'us-east-1',      'us-east-1-mia-1', 'a',          'Y');
-INSERT INTO regions VALUES ('aws', 'msp', 'us-east-1',      'us-east-1-msp-1', 'a',          'Y');
-INSERT INTO regions VALUES ('aws', 'jfk', 'us-east-1',      'us-east-1-nyc-1', 'a',          'Y');
-INSERT INTO regions VALUES ('aws', 'phl', 'us-east-1',      'us-east-1-phl-1', 'a',          'Y');
-INSERT INTO regions VALUES ('aws', 'phx', 'us-west-2',      'us-west-2-phx-1', 'a',          'Y');
-INSERT INTO regions VALUES ('aws', 'pdx', 'us-west-2',      'us-west-2-pdx-1', 'a',          'Y');
+INSERT INTO regions VALUES ('aws', 'iad', 'us-east-1', '',                'a,b,c,d,e,f', 'Y');
+INSERT INTO regions VALUES ('aws', 'dfw', 'us-east-1', 'us-east-1-dfw-1', 'a',           'Y');
+INSERT INTO regions VALUES ('aws', 'atl', 'us-east-1', 'us-east-1-atl-1', 'a',           'Y');
+INSERT INTO regions VALUES ('aws', 'bos', 'us-east-1', 'us-east-1-bos-1', 'a',           'Y');
+INSERT INTO regions VALUES ('aws', 'chi', 'us-east-1', 'us-east-1-chi-1', 'a',           'Y');
+INSERT INTO regions VALUES ('aws', 'iah', 'us-east-1', 'us-east-1-iah-1', 'a',           'Y');
+INSERT INTO regions VALUES ('aws', 'mci', 'us-east-1', 'us-east-1-mci-1', 'a',           'Y');
+INSERT INTO regions VALUES ('aws', 'mia', 'us-east-1', 'us-east-1-mia-1', 'a',           'Y');
+INSERT INTO regions VALUES ('aws', 'msp', 'us-east-1', 'us-east-1-msp-1', 'a',           'Y');
+INSERT INTO regions VALUES ('aws', 'jfk', 'us-east-1', 'us-east-1-nyc-1', 'a',           'Y');
+INSERT INTO regions VALUES ('aws', 'phl', 'us-east-1', 'us-east-1-phl-1', 'a',           'Y');
 
-INSERT INTO regions VALUES ('gcp', 'pdt', 'us-west1',                'us-west1',                'a,b,c', 'Y');
-INSERT INTO regions VALUES ('gcp', 'lax', 'us-west2',                'us-west2',                'a,b,c', 'Y');
-INSERT INTO regions VALUES ('gcp', 'slc', 'us-west3',                'us-west3',                'a,b,c', 'Y');
-INSERT INTO regions VALUES ('gcp', 'las', 'us-west4',                'us-west4',                'a,b,c', 'Y');
-INSERT INTO regions VALUES ('gcp', 'dsm', 'us-central1',             'us-central1',             'a,b,c', 'Y');
-INSERT INTO regions VALUES ('gcp', 'chs', 'us-east1',                'us-east1',                'a,b,c', 'Y');
-INSERT INTO regions VALUES ('gcp', 'iad', 'us-east4',                'us-east4',                'a,b,c', 'Y');
-INSERT INTO regions VALUES ('gcp', 'cmh', 'us-east5',                'us-east5',                'a,b,c', 'Y');
-INSERT INTO regions VALUES ('gcp', 'dfw', 'us-south1',               'us-south1',               'a,b,c', 'Y');
-INSERT INTO regions VALUES ('gcp', 'mtl', 'northamerica-northeast1', 'northamerica-northeast1', 'a,b,c', 'Y');
-INSERT INTO regions VALUES ('gcp', 'yyz', 'northamerica-northeast2', 'northamerica-northeast2', 'a,b,c', 'Y');
-INSERT INTO regions VALUES ('gcp', 'gru', 'southamerica-east1',      'southamerica-east1',      'a,b,c', 'Y');
-INSERT INTO regions VALUES ('gcp', 'scl', 'southamerica-west1',      'southamerica-west1',      'a,b,c', 'Y');
-INSERT INTO regions VALUES ('gcp', 'lhr', 'europe-west2',            'europe-west2',            'a,b,c', 'Y');
-INSERT INTO regions VALUES ('gcp', 'bru', 'europe-west1',            'europe-west1',            'a,b,c', 'Y');
-INSERT INTO regions VALUES ('gcp', 'ams', 'europe-west4',            'europe-west4',            'a,b,c', 'Y');
-INSERT INTO regions VALUES ('gcp', 'zrh', 'europe-west6',            'europe-west6',            'a,b,c', 'Y');
-INSERT INTO regions VALUES ('gcp', 'fra', 'europe-west3',            'europe-west3',            'a,b,c', 'Y');
-INSERT INTO regions VALUES ('gcp', 'hel', 'europe-north1',           'europe-north1',           'a,b,c', 'Y');
-INSERT INTO regions VALUES ('gcp', 'waw', 'europe-central2',         'europe-central2',         'a,b,c', 'Y');
-INSERT INTO regions VALUES ('gcp', 'mil', 'europe-west8',            'europe-west8',            'a,b,c', 'Y');
-INSERT INTO regions VALUES ('gcp', 'mad', 'europe-southwest1',       'europe-southwest1',       'a,b,c', 'Y');
-INSERT INTO regions VALUES ('gcp', 'cdg', 'europe-west9',            'europe-west9',            'a,b,c', 'Y');
-INSERT INTO regions VALUES ('gcp', 'bom', 'asia-south1',             'asia-south1',             'a,b,c', 'Y');
-INSERT INTO regions VALUES ('gcp', 'del', 'asia-south2',             'asia-south2',             'a,b,c', 'Y');
-INSERT INTO regions VALUES ('gcp', 'sin', 'asia-southeast1',         'asia-southeast1',         'a,b,c', 'Y');
-INSERT INTO regions VALUES ('gcp', 'cgk', 'asia-southeast2',         'asia-southeast2',         'a,b,c', 'Y');
-INSERT INTO regions VALUES ('gcp', 'hkg', 'asia-east2',              'asia-east2',              'a,b,c', 'Y');
-INSERT INTO regions VALUES ('gcp', 'tpe', 'asia-east1',              'asia-east1',              'a,b,c', 'Y');
-INSERT INTO regions VALUES ('gcp', 'nrt', 'asia-northeast1',         'asia-northeast1',         'a,b,c', 'Y');
-INSERT INTO regions VALUES ('gcp', 'itm', 'asia-northeast2',         'asia-northeast2',         'a,b,c', 'Y');
-INSERT INTO regions VALUES ('gcp', 'syd', 'australia-southeast1',    'australia-southeast1',    'a,b,c', 'Y');
-INSERT INTO regions VALUES ('gcp', 'mel', 'australia-southeast2',    'australia-southeast2',    'a,b,c', 'Y');
-INSERT INTO regions VALUES ('gcp', 'icn', 'asia-northeast3',         'asia-northeast3',         'a,b,c', 'Y');
+INSERT INTO regions VALUES ('aws', 'cmh', 'us-east-2', '',                'a,b,c',       'Y');
 
-INSERT INTO regions VALUES ('azr', 'sea', 'westus2',            'westus2',            'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'lax', 'westus',             'westus',             'a,b,c',  'N');
-INSERT INTO regions VALUES ('azr', 'phx', 'westus3',            'westus3',            'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'jac', 'westcentralus',      'westcentralus',      'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'dsm', 'centralus',          'centralus',          'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'dfw', 'southcentralus',     'southcentralus',     'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'chi', 'northcentralus',     'northcentralus',     'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'iad', 'eastus',             'eastus',             'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'ric', 'eastus2',            'eastus2',            'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'yyz', 'canadacentral',      'canadacentral',      'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'mtl', 'canadaeast',         'canadaeast',         'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'gru', 'brazilsouth',        'brazilsouth',        'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'jnb', 'southafricanorth',   'southafricanorth',   'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'dub', 'northeurope',        'northeurope',        'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'cwl', 'ukwest',             'ukwest',             'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'lhr', 'uksouth',            'uksouth',            'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'cdg', 'francecentral',      'francecentral',      'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'arn', 'swedencentral',      'swedencentral',      'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'osl', 'norwayeast',         'norwayeast',         'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'ams', 'westeurope',         'westeurope',         'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'fra', 'germanywestcentral', 'germanywestcentral', 'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'zrh', 'switzerlandnorth',   'switzerlandnorth',   'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'doh', 'qatarcentral',       'qatarcentral',       'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'auh', 'UAEnorth',           'UAEnorth',           'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'png', 'centralindia',       'centralindia',       'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'maa', 'southindia',         'southindia',         'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'sin', 'southeastasia',      'southeastasia',      'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'hkg', 'eastasia',           'eastasia',           'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'pvg', 'chinaeast',          'chinaeast',          'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'pek', 'chinanorth',         'chinanorth',         'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'icn', 'koreacentral',       'koreacentral',       'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'itm', 'japanwest',          'japanwest',          'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'nrt', 'japaneast',          'japaneast',          'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'syd', 'australiaeast',      'australiaeast',      'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'mel', 'australiasoutheast', 'australiasoutheast', 'a,b,c',  'Y');
-INSERT INTO regions VALUES ('azr', 'cbr', 'australiacentral',   'australiacentral',   'a,b,c',  'Y');
+INSERT INTO regions VALUES ('aws', 'sfo', 'us-west-1', '',                'a,b,c',       'Y');
+
+INSERT INTO regions VALUES ('aws', 'pdt', 'us-west-2', '',                'a,b,c,d',     'Y');
+INSERT INTO regions VALUES ('aws', 'las', 'us-west-2', 'us-west-2-las-1', 'a',           'Y');
+INSERT INTO regions VALUES ('aws', 'lax', 'us-west-2', 'us-west-2-lax-1', 'a,b',         'Y');
+INSERT INTO regions VALUES ('aws', 'den', 'us-west-2', 'us-west-2-den-1', 'a',           'Y');
+INSERT INTO regions VALUES ('aws', 'phx', 'us-west-2', 'us-west-2-phx-1', 'a',           'Y');
+INSERT INTO regions VALUES ('aws', 'pdx', 'us-west-2', 'us-west-2-pdx-1', 'a',           'Y');
+
+
+INSERT INTO regions VALUES ('aws', 'mtl', 'ca-central-1',   '',           'a,b',         'Y');
+
+INSERT INTO regions VALUES ('aws', 'sin', 'ap-southeast-1', '',           'a,b,c',       'Y');
+INSERT INTO regions VALUES ('aws', 'icn', 'ap-northeast-2', '',           'a,b,c',       'Y');
+INSERT INTO regions VALUES ('aws', 'hkg', 'ap-east-1',      '',           'a,b,c',       'Y');
+INSERT INTO regions VALUES ('aws', 'itm', 'ap-northeast-3', '',           'a,b,c',       'Y');
+INSERT INTO regions VALUES ('aws', 'nrt', 'ap-northeast-1', '',           'a,b,c,d',     'Y');
+INSERT INTO regions VALUES ('aws', 'bom', 'ap-south-1',     '',           'a,b,c',       'Y');
+INSERT INTO regions VALUES ('aws', 'yyc', 'ca-west-1',      '',           'a,b',         'N');
+INSERT INTO regions VALUES ('aws', 'akl', 'ap-southeast-5', '',           'a,b,c',       'N');
+INSERT INTO regions VALUES ('aws', 'cgk', 'ap-southeast-3', '',           'a,b,c',       'Y');
+INSERT INTO regions VALUES ('aws', 'mel', 'ap-southeast-4', '',           'a,b,c',       'N');
+INSERT INTO regions VALUES ('aws', 'syd', 'ap-southeast-2', '',           'a,b,c',       'Y');
+INSERT INTO regions VALUES ('aws', 'hyd', 'ap-south-2',     '',           'a,b,c',       'N');
+INSERT INTO regions VALUES ('aws', 'gru', 'sa-east-1',      '',           'a,b,c',       'Y');
+INSERT INTO regions VALUES ('aws', 'fra', 'eu-central-1',   '',           'a,b,c',       'Y');
+INSERT INTO regions VALUES ('aws', 'dub', 'eu-west-1',      '',           'a,b,c',       'Y');
+INSERT INTO regions VALUES ('aws', 'lhr', 'eu-west-2',      '',           'a,b,c',       'Y');
+INSERT INTO regions VALUES ('aws', 'mxp', 'eu-south-1',     '',           'a,b,c',       'Y');
+INSERT INTO regions VALUES ('aws', 'cdg', 'eu-west-3',      '',           'a,b,c',       'Y');
+INSERT INTO regions VALUES ('aws', 'mad', 'eu-east-1',      '',           'a,b,c',       'N');
+INSERT INTO regions VALUES ('aws', 'arn', 'eu-north-1',     '',           'a,b,c',       'Y');
+INSERT INTO regions VALUES ('aws', 'zrh', 'eu-central-2',   '',           'a,b,c',       'Y');
+INSERT INTO regions VALUES ('aws', 'pek', 'cn-north-1',     '',           'a,b,c',       'Y');
+INSERT INTO regions VALUES ('aws', 'csx', 'cn-northwest-1', '',           'a,b,c',       'Y');
+INSERT INTO regions VALUES ('aws', 'cpt', 'af-south-1',     '',           'a,b,c',       'Y');
+INSERT INTO regions VALUES ('aws', 'bah', 'me-south-1',     '',           'a,b,c',       'Y');
+INSERT INTO regions VALUES ('aws', 'tlv', 'me-west-1',      '',           'a,b,c',       'N');
+INSERT INTO regions VALUES ('aws', 'auh', 'me-south-2',     '',           'a,b,c',       'N');
+
+INSERT INTO regions VALUES ('gcp', 'pdt', 'us-west1',                '', 'a,b,c', 'Y');
+INSERT INTO regions VALUES ('gcp', 'lax', 'us-west2',                '', 'a,b,c', 'Y');
+INSERT INTO regions VALUES ('gcp', 'slc', 'us-west3',                '', 'a,b,c', 'Y');
+INSERT INTO regions VALUES ('gcp', 'las', 'us-west4',                '', 'a,b,c', 'Y');
+INSERT INTO regions VALUES ('gcp', 'dsm', 'us-central1',             '', 'a,b,c', 'Y');
+INSERT INTO regions VALUES ('gcp', 'chs', 'us-east1',                '', 'a,b,c', 'Y');
+INSERT INTO regions VALUES ('gcp', 'iad', 'us-east4',                '', 'a,b,c', 'Y');
+INSERT INTO regions VALUES ('gcp', 'cmh', 'us-east5',                '', 'a,b,c', 'Y');
+INSERT INTO regions VALUES ('gcp', 'dfw', 'us-south1',               '', 'a,b,c', 'Y');
+INSERT INTO regions VALUES ('gcp', 'mtl', 'northamerica-northeast1', '', 'a,b,c', 'Y');
+INSERT INTO regions VALUES ('gcp', 'yyz', 'northamerica-northeast2', '', 'a,b,c', 'Y');
+INSERT INTO regions VALUES ('gcp', 'gru', 'southamerica-east1',      '', 'a,b,c', 'Y');
+INSERT INTO regions VALUES ('gcp', 'scl', 'southamerica-west1',      '', 'a,b,c', 'Y');
+INSERT INTO regions VALUES ('gcp', 'lhr', 'europe-west2',            '', 'a,b,c', 'Y');
+INSERT INTO regions VALUES ('gcp', 'bru', 'europe-west1',            '', 'a,b,c', 'Y');
+INSERT INTO regions VALUES ('gcp', 'ams', 'europe-west4',            '', 'a,b,c', 'Y');
+INSERT INTO regions VALUES ('gcp', 'zrh', 'europe-west6',            '', 'a,b,c', 'Y');
+INSERT INTO regions VALUES ('gcp', 'fra', 'europe-west3',            '', 'a,b,c', 'Y');
+INSERT INTO regions VALUES ('gcp', 'hel', 'europe-north1',           '', 'a,b,c', 'Y');
+INSERT INTO regions VALUES ('gcp', 'waw', 'europe-central2',         '', 'a,b,c', 'Y');
+INSERT INTO regions VALUES ('gcp', 'mil', 'europe-west8',            '', 'a,b,c', 'Y');
+INSERT INTO regions VALUES ('gcp', 'mad', 'europe-southwest1',       '', 'a,b,c', 'Y');
+INSERT INTO regions VALUES ('gcp', 'cdg', 'europe-west9',            '', 'a,b,c', 'Y');
+INSERT INTO regions VALUES ('gcp', 'bom', 'asia-south1',             '', 'a,b,c', 'Y');
+INSERT INTO regions VALUES ('gcp', 'del', 'asia-south2',             '', 'a,b,c', 'Y');
+INSERT INTO regions VALUES ('gcp', 'sin', 'asia-southeast1',         '', 'a,b,c', 'Y');
+INSERT INTO regions VALUES ('gcp', 'cgk', 'asia-southeast2',         '', 'a,b,c', 'Y');
+INSERT INTO regions VALUES ('gcp', 'hkg', 'asia-east2',              '', 'a,b,c', 'Y');
+INSERT INTO regions VALUES ('gcp', 'tpe', 'asia-east1',              '', 'a,b,c', 'Y');
+INSERT INTO regions VALUES ('gcp', 'nrt', 'asia-northeast1',         '', 'a,b,c', 'Y');
+INSERT INTO regions VALUES ('gcp', 'itm', 'asia-northeast2',         '', 'a,b,c', 'Y');
+INSERT INTO regions VALUES ('gcp', 'syd', 'australia-southeast1',    '', 'a,b,c', 'Y');
+INSERT INTO regions VALUES ('gcp', 'mel', 'australia-southeast2',    '', 'a,b,c', 'Y');
+INSERT INTO regions VALUES ('gcp', 'icn', 'asia-northeast3',         '', 'a,b,c', 'Y');
+
+INSERT INTO regions VALUES ('azr', 'sea', 'westus2',            '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'lax', 'westus',             '', 'a,b,c',  'N');
+INSERT INTO regions VALUES ('azr', 'phx', 'westus3',            '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'jac', 'westcentralus',      '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'dsm', 'centralus',          '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'dfw', 'southcentralus',     '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'chi', 'northcentralus',     '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'iad', 'eastus',             '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'ric', 'eastus2',            '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'yyz', 'canadacentral',      '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'mtl', 'canadaeast',         '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'gru', 'brazilsouth',        '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'jnb', 'southafricanorth',   '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'dub', 'northeurope',        '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'cwl', 'ukwest',             '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'lhr', 'uksouth',            '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'cdg', 'francecentral',      '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'arn', 'swedencentral',      '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'osl', 'norwayeast',         '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'ams', 'westeurope',         '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'fra', 'germanywestcentral', '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'zrh', 'switzerlandnorth',   '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'doh', 'qatarcentral',       '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'auh', 'UAEnorth',           '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'png', 'centralindia',       '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'maa', 'southindia',         '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'sin', 'southeastasia',      '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'hkg', 'eastasia',           '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'pvg', 'chinaeast',          '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'pek', 'chinanorth',         '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'icn', 'koreacentral',       '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'itm', 'japanwest',          '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'nrt', 'japaneast',          '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'syd', 'australiaeast',      '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'mel', 'australiasoutheast', '', 'a,b,c',  'Y');
+INSERT INTO regions VALUES ('azr', 'cbr', 'australiacentral',   '', 'a,b,c',  'Y');
 
 
 CREATE VIEW v_airports AS
-SELECT g.geo, c.country3, c.country, a.airport, a.state, r.provider, r.region, a.airport_area, 
-       a.lattitude, a.longitude, r.parent_region, r.avail_zones
+SELECT g.geo, c.country, a.airport, a.airport_area, a.lattitude, a.longitude,
+       r.provider, r.region, r.parent_region, r.avail_zones
   FROM geos g, countries c, regions r, airports a
  WHERE g.geo = c.geo 
    AND c.country = a.country 
-   AND a.airport  = r.airport;
+   AND a.airport  = r.airport
+ORDER BY 1, 2, 3, 4, 5;
 
