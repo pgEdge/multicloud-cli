@@ -2,7 +2,6 @@
 
 #  Copyright 2023-2024 PGEDGE  All rights reserved. #
 
-
 import os, sys, configparser
 
 os.chdir(os.path.dirname(__file__))
@@ -38,12 +37,12 @@ def get_size(conn, p_size):
 
 def get_image(provider, conn, p_image):
     try:
-        if provider == "ec2":
+        if provider in ("ec2", "aws"):
             images = conn.list_images(ex_image_ids={p_image})
         else:
             images = conn.list_images()
     except Exception as e:
-        exit_message(str(e), 1)
+        util.exit_message(str(e), 1)
 
     for i in images:
         if i.id == p_image:
@@ -63,7 +62,7 @@ def get_node_values(provider, metro, name):
         status = str(nd.state)
         location = None
         size = None
-        if provider == "eqnx":
+        if provider in ("eqn", "equinixmetal"):
             country = str(nd.extra["facility"]["metro"]["country"]).lower()
             az = str(nd.extra["facility"]["code"])
             location = str(f"{country}-{az}")
@@ -124,7 +123,7 @@ def node_action(action, provider, name, location):
 
 
 def is_node_unique(name, prvdr, conn, sect):
-    if prvdr == "equinixmetal":
+    if prvdr in ("eqn", "equinixmetal"):
         project = sect["project"]
         nodes = conn.list_nodes(project)
     else:
@@ -147,7 +146,7 @@ def create_node(
     if not is_node_unique(name, provider, conn, sect):
         util.exit_message(f"Node '{name}' already exists in '{provider}:{metro}'")
 
-    if provider == "equinixmetal":
+    if provider in ("eqn", "equinixmetal"):
         if size is None:
             size = sect["size"]
         if image is None:
@@ -155,9 +154,9 @@ def create_node(
         if project is None:
             project = sect["project"]
 
-        create_node_eqnx(name, metro, size, image, project)
+        create_node_eqn(name, metro, size, image, project)
 
-    elif provider == "ec2":
+    elif provider in ("aws", "ec2"):
         if size is None:
             size = sect["size"]
         if image is None:
@@ -189,10 +188,10 @@ def create_node_ec2(name, metro, size, image, ssh_key):
     return
 
 
-def create_node_eqnx(name, location, size, image, project):
+def create_node_eqn(name, location, size, image, project):
     prvdr, conn, section, metro, project = util.get_connection("equinixmetal")
     sz = get_size(conn, size)
-    im = get_image("equinixmetal", conn, image)
+    im = get_image("eqn", conn, image)
 
     loct = get_location(location)
 
@@ -227,50 +226,50 @@ def reboot_node(provider, name, metro):
 def cluster_nodes(cluster_name, providers, metros, node_names):
     """Create a Cluster definition json file from a set of nodes."""
 
-    message(
+    util.message(
         f"\n# cluster-nodes(cluster_name={cluster_name}, providers={providers}, metros={metros}, node_names={node_names})"
     )
 
     if not isinstance(providers, list) or len(providers) < 2:
-        exit_message(
+        util.exit_message(
             f"providers parm '{providers}' must be a square bracketed list with two or more elements",
             1,
         )
 
     if not isinstance(metros, list) or len(metros) < 2:
-        exit_message(
+        util.exit_message(
             f"metros parm '{metros}' must be a square bracketed list with two or more elements",
             1,
         )
 
     if not isinstance(node_names, list) or len(node_names) < 2:
-        exit_message(
+        util.exit_message(
             f"node_names parm '{node_names}' must be a square bracketed list with two or more elements",
             1,
         )
 
     if (not len(providers) == len(metros)) or (not len(providers) == len(node_names)):
         s1 = f"providers({len(providers)}), metros({len(metros)}), and node_names({len(node_names)})"
-        exit_message(f"{s1} parms must have same number of elements")
+        util.exit_message(f"{s1} parms must have same number of elements")
 
     if len(node_names) != len(set(node_names)):
-        exit_message(f"node_names ({node_names}) must be unique")
+        util.exit_message(f"node_names ({node_names}) must be unique")
 
     node_kount = len(providers)
     i = 0
     while i < node_kount:
-        message(f"\n## {providers[i]}, {metros[i]}, {node_names[i]}")
+        util.message(f"\n## {providers[i]}, {metros[i]}, {node_names[i]}")
         conn, section, metro, project = get_connection(providers[i], metros[i])
 
         name, public_ip, status, metro, size = get_node_values(
             providers[i], metros[i], node_names[i]
         )
         if not name:
-            exit_message(
+            util.exit_message(
                 f"Node ({providers[i]}, {metros[i]}, {node_names[i]}) not available"
             )
 
-        message(f"### {name}, {public_ip}, {status}, {metro}, {size}")
+        util.message(f"### {name}, {public_ip}, {status}, {metro}, {size}")
 
         i = i + 1
 
@@ -297,9 +296,9 @@ def list_sizes(provider, metro=None, project=None, json=False):
         if bandwidth is None or str(bandwidth) == "0":
             bandwidth = ""
         cpu = ""
-        if provider == "ec2":
+        if provider in ("aws", "ec2"):
             cpu = s.extra["vcpu"]
-        elif provider == "equinixmetal":
+        elif provider in ("eqn", "equinixmetal"):
             cpu = s.extra["cpus"]
         if cpu is None:
             cpu = ""
@@ -348,10 +347,10 @@ def list_nodes(provider, metro=None, project=None, json=False):
     conn, sect, metro, project = util.get_connection(provider, metro, project)
 
     nl = []
-    if provider == ("equinixmetal"):
-        nl = equinixmetal_node_list(conn, metro, project, json)
-    elif provider == ("ec2"):
-        nl = ec2_node_list(conn, metro, project, json)
+    if provider in ("eqn", "equinixmetal"):
+        nl = eqn_node_list(conn, metro, project, json)
+    elif provider in ("aws", "ec2"):
+        nl = aws_node_list(conn, metro, project, json)
     else:
         util.exit_message(f"Invalid provider '{provider}' (list_nodes)")
 
@@ -371,7 +370,7 @@ def list_nodes(provider, metro=None, project=None, json=False):
     return
 
 
-def ec2_node_list(conn, metro, project, json):
+def aws_node_list(conn, metro, project, json):
     try:
         nodes = conn.list_nodes()
     except Exception as e:
@@ -394,12 +393,12 @@ def ec2_node_list(conn, metro, project, json):
         country = metro[:2]
         metro = metro
         key_name = n.extra['key_name']
-        nl.append(["ec2", node, status, size, country, metro, location, public_ip, private_ip])
+        nl.append(["aws", node, status, size, country, metro, location, public_ip, private_ip])
 
     return(nl)
 
 
-def equinixmetal_node_list(conn, metro, project, json):
+def eqn_node_list(conn, metro, project, json):
     nodes = conn.list_nodes(project)
 
     nl = []
@@ -412,7 +411,7 @@ def equinixmetal_node_list(conn, metro, project, json):
         metro = f"{n.extra['facility']['metro']['name']} ({n.extra['facility']['metro']['code']})"
         location = n.extra["facility"]["code"]
         status = n.state
-        nl.append(["equinixmetal", node, status, size, country, metro, location, public_ip, private_ip])
+        nl.append(["eqn", node, status, size, country, metro, location, public_ip, private_ip])
 
     return(nl)
 

@@ -40,12 +40,20 @@ def list_providers(json=False):
         return
     
     p = PrettyTable()
-    p.field_names = ["Provider", "Description"]
+    p.field_names = ["Provider", "Libcloud Name", "Description"]
     p.add_rows(util.PROVIDERS)
+    p.align["Libcloud Name"] = "l"
+    p.align["Description"] = "l"
     print(p)
     
     return
 
+
+def list_airports(json=False):
+   """List Airport Metro-Region Aliases"""
+
+   data = util.airport_list()
+   print(data)
 
 def compute():
     """Provision &/or Control VM's (use './compute --help' for more"""
@@ -93,6 +101,7 @@ if __name__ == "__main__":
     fire.Fire(
         {
             "list-providers": list_providers,
+            "list-airports":  list_airports,
             "compute":        compute,
             "backup":         backup,
             "storage":        storage,

@@ -2,12 +2,11 @@
 
 #  Copyright 2023-2024 PGEDGE  All rights reserved. #
 
-import os, sys, configparser, sqlite3
+import os, sys, configparser, sqlite3, json
 
 os.chdir(os.path.dirname(__file__))
 sys.path.append(os.path.join(os.path.dirname(__file__), "lib"))
 
-import json as jjson
 import libcloud
 from libcloud.compute.types import Provider
 
@@ -17,8 +16,10 @@ CONFIG = f"{os.getenv('HOME')}/.multicloud.conf"
 
 PROVIDERS = \
     [
-        ["equinixmetal", "Equinix Metal"],
-        ["ec2",          "Amazon Web Services"],
+        ["eqn", "equinixmetal", "Equinix Metal"],
+        ["aws", "ec2",          "Amazon Web Services"],
+        ["azr", "azure",        "Microsoft Azure"],
+        ["gcp", "gce",          "Google Cloud Platform"],
     ]
 
 
@@ -35,6 +36,12 @@ def message(msg):
 
 
 def load_config(section):
+    # make section an alias
+    if section == "equinixmetal":
+        section = "eqn"
+    elif section == "ec2":
+        section = "aws"
+
     if not os.path.exists(CONFIG):
         exit_message(f"config file {CONFIG} missing")
     try:
@@ -51,9 +58,15 @@ def load_config(section):
 def get_connection(provider="equinixmetal", metro=None, project=None):
     sect = load_config(provider)
 
+    # convert provider to libcloud from an alias
+    if provider == "aws":
+        provider = "ec2"
+    elif provider == "eqn":
+        provider = "equinixmetal"
+
     try:
         Driver = libcloud.compute.providers.get_driver(provider)
-        if provider == "equinixmetal":
+        if provider in ("equinixmetal"):
             p1 = sect["api_token"]
             conn = Driver(p1)
             if not project:
@@ -78,7 +91,14 @@ def output_json(tbl):
     return
 
 
+def airport_list():
+    cursor = cL.cursor()
+    cursor.execute("SELECT * FROM v_airports")
+    data = cursor.fetchall()
+    return json.dumps(data)
+
+
 # MAINLINE ################################################################
-cL = sqlite3.connect("../conf/multicloud.db", check_same_thread=False)
+cL = sqlite3.connect("../conf/metadata.db", check_same_thread=False)
 
 
