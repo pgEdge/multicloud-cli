@@ -170,12 +170,12 @@ def create_node(
         if project:
             util.exit_message("'project' is not a valid AWS parm", 1)
 
-        create_node_ec2(name, metro, size, image, ssh_key)
+        create_node_aws(name, metro, size, image, ssh_key)
 
     return
 
 
-def create_node_ec2(name, metro, size, image, ssh_key):
+def create_node_aws(name, metro, size, image, ssh_key):
     conn, section, metro, project = util.get_connection("ec2", metro)
     sz = get_size(conn, size)
     im = get_image("aws", conn, image)
@@ -189,11 +189,10 @@ def create_node_ec2(name, metro, size, image, ssh_key):
 
 
 def create_node_eqn(name, location, size, image, project):
-    prvdr, conn, section, metro, project = util.get_connection("equinixmetal")
+    conn, section, metro, project = util.get_connection("equinixmetal")
     sz = get_size(conn, size)
     im = get_image("eqn", conn, image)
-
-    loct = get_location(location)
+    loct = get_location("eqn", location)
 
     try:
         conn.create_node(

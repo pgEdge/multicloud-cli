@@ -11,7 +11,7 @@
             "type": "python",
             "request": "launch",
             "program": "${file}",
-            "args": ["list-airports"],
+            "args": ["create-node", "eqn",  "New York", "test-1"],
             "console": "integratedTerminal",
             "justMyCode": true
         }
