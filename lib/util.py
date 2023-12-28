@@ -91,14 +91,27 @@ def output_json(tbl):
     return
 
 
-def airport_list():
+def airport_list(geo=None, country=None, airport=None, provider=None, json=False):
     cursor = cL.cursor()
-    cursor.execute("SELECT * FROM v_airports")
-    data = cursor.fetchall()
+    wr = "1 = 1"
+    if geo:
+        wr = wr + f" AND geo = '{geo}'"
+    if country:
+        wr = wr + f" AND country = '{country}'"
+    if airport:
+        wr = wr + f" AND airport = '{airport}'"
+    if provider:
+        wr = wr + f" AND provider= '{provider}'"
+    cols = "geo, country, airport, airport_area, lattitude, longitude, provider, metro, parent, locations"
+    try:
+        cursor.execute(f"SELECT {cols} FROM v_airports WHERE {wr}")
+        data = cursor.fetchall()
+    except Exception as e:
+        exit_message(str(e), 1)
     al = []
     for d in data:
-        al.append([str(d[0]), str(d[1]), str(d[2]), str(d[3]), str(d[4]), 
-                   str(d[5]), str(d[6]), str(d[7]), str(d[8]), str(d[9])])
+        al.append([str(d[0]), str(d[1]), str(d[2]), str(d[3]), d[4], 
+                   d[5], str(d[6]), str(d[7]), str(d[8]), str(d[9])])
     return (al)
 
 

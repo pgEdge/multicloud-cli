@@ -49,12 +49,19 @@ def list_providers(json=False):
     return
 
 
-def list_airports(json=False):
+def list_airports(geo=None, country=None, airport=None, provider=None, json=False):
    """List Airport Metro-Region Aliases"""
 
-   al = util.airport_list()
+   al = util.airport_list(geo, country, airport, provider, json)
    p = PrettyTable()
-   p.field_names = ["Geo", "Country", "Airport", "Area", "Lattitude", "Longitude", "Provider", "Region", "Parent", "Locations"]
+   p.field_names = ["Geo", "Country", "Airport", "Area", "Lattitude", "Longitude", "Provider", "Metro", "Parent", "Locations"]
+   p.float_format = ".4"
+   p.align["Lattitude"] = "r"
+   p.align["Longitude"] = "r"
+   p.align["Area"] = "l"
+   p.align["Metro"] = "l"
+   p.align["Parent"] = "l"
+   p.align["Locations"] = "l"
    p.add_rows(al)
    print(p)
 
