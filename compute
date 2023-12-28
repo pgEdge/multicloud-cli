@@ -144,8 +144,8 @@ def create_node(
 
     conn, sect, metro, project = util.get_connection(provider, metro, project)
 
-    if not is_node_unique(name, prvdr, conn, sect):
-        util.exit_message(f"Node '{name}' already exists in '{prvdr}:{metro}'")
+    if not is_node_unique(name, provider, conn, sect):
+        util.exit_message(f"Node '{name}' already exists in '{provider}:{metro}'")
 
     if provider == "equinixmetal":
         if size is None:
@@ -162,27 +162,27 @@ def create_node(
             size = sect["size"]
         if image is None:
             my_image = f"image-{metro}"
-            image = sect[my_image]
-        if keyname is None:
-            keyname = sect["keyname"]
+            try:
+                image = sect[my_image]
+            except Exception:
+                util.exit_message(f"Missing image-id for '{metro}'")
+        if ssh_key is None:
+            ssh_key = sect["ssh_key"]
         if project:
-            exit_message("'project' is not a valid AWS parm", 1)
+            util.exit_message("'project' is not a valid AWS parm", 1)
 
-        create_node_ec2(name, metro, flavor, image, ssh_key)
-
-    else:
-        util.exit_message(f"Invalid provider '{prvdr}' (create_node)")
+        create_node_ec2(name, metro, size, image, ssh_key)
 
     return
 
 
-def create_node_ec2(name, metro, size, image, keyname):
+def create_node_ec2(name, metro, size, image, ssh_key):
     conn, section, metro, project = util.get_connection("ec2", metro)
     sz = get_size(conn, size)
     im = get_image("aws", conn, image)
 
     try:
-        conn.create_node(name=name, image=im, size=size, ex_keyname=keyname)
+        conn.create_node(name=name, image=im, size=size, ex_keyname=ssh_key)
     except Exception as e:
         util.exit_message(str(e), 1)
 
