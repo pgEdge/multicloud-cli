@@ -281,6 +281,9 @@ def list_sizes(provider, metro=None, project=None, json=False):
     """List available node sizes."""
     conn, sect, metro, project = util.get_connection(provider, metro, project)
 
+    if metro is None:
+        metro = ""
+
     sizes = conn.list_sizes()
     sl = []
     for s in sizes:
@@ -293,14 +296,21 @@ def list_sizes(provider, metro=None, project=None, json=False):
         bandwidth = s.bandwidth
         if bandwidth is None or str(bandwidth) == "0":
             bandwidth = ""
-        sl.append([provider, metro, s.id, round(ram/1024), s.disk, bandwidth, price])
+        cpu = ""
+        if provider == "ec2":
+            cpu = s.extra["vcpu"]
+        elif provider == "equinixmetal":
+            cpu = s.extra["cpus"]
+        if cpu is None:
+            cpu = ""
+        sl.append([provider, metro, s.id, cpu, round(ram/1024), s.disk, bandwidth, price])
 
     if json:
         util.output_json(sl)
         return
 
     p = PrettyTable()
-    p.field_names = ["Provider", "Metro", "Size", "RAM", "Disk", "Bandwidth", "Price"]
+    p.field_names = ["Provider", "Metro", "Size", "CPU", "RAM", "Disk", "Bandwidth", "Price"]
     p.add_rows(sl)
     p.float_format = ".2"
     p.align["Size"] = "l"
@@ -311,7 +321,7 @@ def list_sizes(provider, metro=None, project=None, json=False):
     print(p)
 
 
-def list_locations(provider, metro, project=None, json=False):
+def list_locations(provider, metro=None, project=None, json=False):
     """List available locations."""
     conn, sect, metro, project = util.get_connection(provider, metro, project)
 

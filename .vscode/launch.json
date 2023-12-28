@@ -11,7 +11,7 @@
             "type": "python",
             "request": "launch",
             "program": "${file}",
-            "args": ["list-sizes", "ec2"],
+            "args": ["list-sizes", "equinixmetal"],
             "console": "integratedTerminal",
             "justMyCode": true
         }
