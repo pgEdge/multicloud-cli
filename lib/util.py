@@ -95,7 +95,11 @@ def airport_list():
     cursor = cL.cursor()
     cursor.execute("SELECT * FROM v_airports")
     data = cursor.fetchall()
-    return json.dumps(data)
+    al = []
+    for d in data:
+        al.append([str(d[0]), str(d[1]), str(d[2]), str(d[3]), str(d[4]), 
+                   str(d[5]), str(d[6]), str(d[7]), str(d[8]), str(d[9])])
+    return (al)
 
 
 # MAINLINE ################################################################

@@ -52,8 +52,12 @@ def list_providers(json=False):
 def list_airports(json=False):
    """List Airport Metro-Region Aliases"""
 
-   data = util.airport_list()
-   print(data)
+   al = util.airport_list()
+   p = PrettyTable()
+   p.field_names = ["Geo", "Country", "Airport", "Area", "Lattitude", "Longitude", "Provider", "Region", "Parent", "Locations"]
+   p.add_rows(al)
+   print(p)
+
 
 def compute():
     """Provision &/or Control VM's (use './compute --help' for more"""
