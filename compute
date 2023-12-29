@@ -93,33 +93,31 @@ def destroy_node(provider, name, metro):
     return
 
 
-def node_action(action, provider, name, location):
-    conn, section, metro, project = util.get_connection(provider, location)
+def node_action(action, provider, metro, name):
+    conn, section, metro, project = util.get_connection(provider, metro)
 
     nd = get_node(conn, name)
     if nd:
         try:
             if action == "destroy":
-                util.message(f"Destroying node '{provider}:{name}:{location}'")
+                util.message(f"Destroying node '{provider}:{metro}:{name}'")
                 rc = conn.destroy_node(nd)
             elif action == "stop":
-                util.message(f"Stopping node '{provider}:{name}:{location}'")
+                util.message(f"Stopping node '{provider}:{metro}:{name}'")
                 rc = conn.stop_node(nd)
             elif action == "start":
-                util.message(f"Starting node '{provider}:{name}:{location}'")
+                util.message(f"Starting node '{provider}:{metro}:{name}'")
                 rc = conn.start_node(nd)
             elif action == "reboot":
-                util.message(f"Rebooting node '{provider}:{name}:{location}'")
+                util.message(f"Rebooting node '{provider}:{metro}:{name}'")
                 rc = conn.reboot_node(nd)
-            else:
-                util.exit_message(f"Invalid action '{action}'")
 
         except Exception as e:
             util.exit_message(str(e), 1)
 
         return rc
 
-    util.exit_message(f"Node '{provider}:{name}:{location}' not found", 1)
+    util.exit_message(f"Node '{provider}:{metro}:{name}' not found", 1)
 
 
 def is_node_unique(name, prvdr, conn, sect):
@@ -181,7 +179,8 @@ def create_node_aws(name, metro, size, image, ssh_key):
     im = get_image("aws", conn, image)
 
     try:
-        conn.create_node(name=name, image=im, size=size, ex_keyname=ssh_key)
+        nd = conn.create_node(name=name, image=im, size=sz, ex_keyname=ssh_key)
+        print(f"node.id = {nd.id}")
     except Exception as e:
         util.exit_message(str(e), 1)
 
@@ -196,7 +195,7 @@ def create_node_eqn(name, location, size, image, project):
 
     try:
         conn.create_node(
-            name=name, image=im, size=size, location=loct, ex_project_id=project
+            name=name, image=im, size=sz, location=loct, ex_project_id=project
         )
     except Exception as e:
         util.exit_message(str(e), 1)
@@ -204,21 +203,21 @@ def create_node_eqn(name, location, size, image, project):
     return
 
 
-def start_node(provider, name, metro):
+def start_node(provider, metro, name):
     """Start a node."""
-    node_action("start", provider, name, metro)
+    node_action("start", provider, metro, name)
     return
 
 
-def stop_node(provider, name, metro):
+def stop_node(provider, metro, name):
     """Stop a node."""
-    node_action("stop", provider, name, metro)
+    node_action("stop", provider, metro, name)
     return
 
 
-def reboot_node(provider, name, metro):
+def reboot_node(provider, metro, name):
     """Reboot a node."""
-    node_action("reboot", provider, name, metro)
+    node_action("reboot", provider, metro, name)
     return
 
 

@@ -11,7 +11,7 @@
             "type": "python",
             "request": "launch",
             "program": "${file}",
-            "args": ["list-airports",  "--country=us", "--provider=eqn"],
+            "args": ["create-node",  "aws", "us-east-1", "t2"],
             "console": "integratedTerminal",
             "justMyCode": true
         }
