@@ -82,7 +82,9 @@ def get_connection(provider="equinixmetal", metro=None, project=None):
     except Exception as e:
         exit_message(str(e), 1)
 
-    return (conn, sect, metro, project)
+    airport = get_airport(provider, metro)
+
+    return (conn, sect, metro, airport, project)
 
 
 def output_json(tbl):
@@ -91,8 +93,59 @@ def output_json(tbl):
     return
 
 
+def is_metro(metro):
+    try:
+        cursor = cL.cursor()
+        cursor.execute(f"SELECT count(*) FROM metros WHERE metro = '{metro}'")
+        data = cursor.fetchone()
+        if data[0] > 0:
+            return(True)
+    except Exception as e:
+        exit_message(f"is_metro({metro}) ERROR:\n {str(e)}", 1)
+
+    return(False)
+
+
+def is_parent(parent):
+    try:
+        cursor = cL.cursor()
+        cursor.execute(f"SELECT count(*) FROM metros WHERE parent = '{parent}'")
+        data = cursor.fetchone()
+        if data[0] > 0:
+            return(True)
+    except Exception as e:
+        exit_message(f"is_parent({parent}) ERROR:\n {str(e)}", 1)
+
+    return(False)
+
+
+def is_airport(airport):
+    try:
+        cursor = cL.cursor()
+        cursor.execute(f"SELECT count(*) FROM airports WHERE airport = '{airport}'")
+        data = cursor.fetchone()
+        if data[0] > 0:
+            return(True)
+    except Exception as e:
+        exit_message(f"is_airport({airport}) ERROR:\n {str(e)}", 1)
+
+    return(False)
+
+
+def get_airport(provider, metro):
+    try:
+        cursor = cL.cursor()
+        cursor.execute(f"SELECT airport FROM metros WHERE provider = '{provider}' AND metro = '{metro}'")
+        data = cursor.fetchone()
+        if data:
+            return(str(data[0]))
+    except Exception as e:
+        exit_message(f"get_airport({provider}:{metro}) ERROR:\n {str(e)}", 1)
+
+    return(None)
+
+
 def airport_list(geo=None, country=None, airport=None, provider=None, json=False):
-    cursor = cL.cursor()
     wr = "1 = 1"
     if geo:
         wr = wr + f" AND geo = '{geo}'"
@@ -104,6 +157,7 @@ def airport_list(geo=None, country=None, airport=None, provider=None, json=False
         wr = wr + f" AND provider= '{provider}'"
     cols = "geo, country, airport, airport_area, lattitude, longitude, provider, metro, parent, locations"
     try:
+        cursor = cL.cursor()
         cursor.execute(f"SELECT {cols} FROM v_airports WHERE {wr}")
         data = cursor.fetchall()
     except Exception as e:

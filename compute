@@ -16,7 +16,7 @@ from libcloud.compute.types import Provider
 from prettytable import PrettyTable
 
 def get_location(provider, location):
-    conn, section, metro, project = util.get_connection(provider)
+    conn, section, metro, airport, project = util.get_connection(provider)
 
     locations = conn.list_locations()
     for ll in locations:
@@ -52,7 +52,7 @@ def get_image(provider, conn, p_image):
 
 
 def get_node_values(provider, metro, name):
-    conn, section, metro, project = util.get_connection(provider, metro)
+    conn, section, metro, airport, project = util.get_connection(provider, metro)
     nd = get_node(conn, name)
     if not nd:
         return None, None, None, None, None
@@ -94,7 +94,7 @@ def destroy_node(provider, name, metro):
 
 
 def node_action(action, provider, metro, name):
-    conn, section, metro, project = util.get_connection(provider, metro)
+    conn, section, metro, airport, project = util.get_connection(provider, metro)
 
     nd = get_node(conn, name)
     if nd:
@@ -139,7 +139,7 @@ def create_node(
 ):
     """Create a node."""
 
-    conn, sect, metro, project = util.get_connection(provider, metro, project)
+    conn, sect, metro, airport, project = util.get_connection(provider, metro, project)
 
     if not is_node_unique(name, provider, conn, sect):
         util.exit_message(f"Node '{name}' already exists in '{provider}:{metro}'")
@@ -174,7 +174,7 @@ def create_node(
 
 
 def create_node_aws(name, metro, size, image, ssh_key):
-    conn, section, metro, project = util.get_connection("ec2", metro)
+    conn, section, metro, airport, project = util.get_connection("ec2", metro)
     sz = get_size(conn, size)
     im = get_image("aws", conn, image)
 
@@ -188,7 +188,7 @@ def create_node_aws(name, metro, size, image, ssh_key):
 
 
 def create_node_eqn(name, location, size, image, project):
-    conn, section, metro, project = util.get_connection("equinixmetal")
+    conn, section, metro, airport, project = util.get_connection("equinixmetal")
     sz = get_size(conn, size)
     im = get_image("eqn", conn, image)
     loct = get_location("eqn", location)
@@ -257,7 +257,7 @@ def cluster_nodes(cluster_name, providers, metros, node_names):
     i = 0
     while i < node_kount:
         util.message(f"\n## {providers[i]}, {metros[i]}, {node_names[i]}")
-        conn, section, metro, project = get_connection(providers[i], metros[i])
+        conn, section, metro, airport, project = util.get_connection(providers[i], metros[i])
 
         name, public_ip, status, metro, size = get_node_values(
             providers[i], metros[i], node_names[i]
@@ -276,7 +276,7 @@ def cluster_nodes(cluster_name, providers, metros, node_names):
 
 def list_sizes(provider, metro=None, project=None, json=False):
     """List available node sizes."""
-    conn, sect, metro, project = util.get_connection(provider, metro, project)
+    conn, sect, metro, airport, project = util.get_connection(provider, metro, project)
 
     if metro is None:
         metro = ""
@@ -320,7 +320,7 @@ def list_sizes(provider, metro=None, project=None, json=False):
 
 def list_locations(provider, metro=None, project=None, json=False):
     """List available locations."""
-    conn, sect, metro, project = util.get_connection(provider, metro, project)
+    conn, sect, metro, airport, project = util.get_connection(provider, metro, project)
 
     ll = []
     locations = conn.list_locations()
@@ -342,7 +342,7 @@ def list_locations(provider, metro=None, project=None, json=False):
 
 def list_nodes(provider, metro=None, project=None, json=False):
     """List nodes."""
-    conn, sect, metro, project = util.get_connection(provider, metro, project)
+    conn, sect, metro, airport, project = util.get_connection(provider, metro, project)
 
     nl = []
     if provider in ("eqn", "equinixmetal"):
