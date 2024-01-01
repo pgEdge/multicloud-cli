@@ -112,49 +112,57 @@ INSERT INTO airports VALUES ('ysj', 'Saint John',         'ca',   45.2733,  -66.
 INSERT INTO airports VALUES ('yys', 'Calgary',            'ca',   51.1215, -114.0000);
 INSERT INTO airports VALUES ('yvr', 'Vancouver',          'ca',   49.1902, -123.1837);
 
-INSERT INTO airports VALUES ('gru', 'Sao Paulo',          'br',    -23.5337,  -46.6252);
-INSERT INTO airports VALUES ('gig', 'Rio de Janeiro',     'br',    -22.8053,  -43.2395);
+INSERT INTO airports VALUES ('gru', 'Sao Paulo',          'br',  -23.5337,  -46.6252);
+INSERT INTO airports VALUES ('gig', 'Rio de Janeiro',     'br',  -22.8053,  -43.2395);
 
-INSERT INTO airports VALUES ('dub', 'Dublin',             'ir',     53.4264,   -6.2499);
-INSERT INTO airports VALUES ('lhr', 'London',             'gb',     51.4603,   -0.4390);
-INSERT INTO airports VALUES ('fra', 'Frankfurt',          'de',     50.0379,    8.5621);
-INSERT INTO airports VALUES ('arn', 'Stockholm',          'se',     59.6497,   17.9237);
-INSERT INTO airports VALUES ('cdg', 'Paris',              'fr',     49.0097,    2.5477);
-INSERT INTO airports VALUES ('mxp', 'Milan',              'it',     45.6286,    8.7236);
-INSERT INTO airports VALUES ('bah', 'Bahrain',            'bh',     26.2697,   50.6259);
-INSERT INTO airports VALUES ('auh', 'UAE',                'ae',     24.4329,   54.6445);
-INSERT INTO airports VALUES ('syd', 'Sydney',             'au',    -33.9399,  151.1752);
-INSERT INTO airports VALUES ('cpt', 'Cape Town',          'za',    -33.9725,   18.6019);
-INSERT INTO airports VALUES ('nrt', 'Tokyo',              'jp',     35.7719,  140.3928);
-INSERT INTO airports VALUES ('itm', 'Osaka',              'jp',     34.4338,  135.2263);
-INSERT INTO airports VALUES ('hkg', 'Hong Kong',          'hk',     22.3080,  113.9184);
-INSERT INTO airports VALUES ('icn', 'Seoul',              'kr',     37.4601,  126.4406);
-INSERT INTO airports VALUES ('sin', 'Singapore',          'sg',      1.4201,  103.8645);
-INSERT INTO airports VALUES ('bom', 'Mumbai',             'in',     19.0901,   72.8687);
-INSERT INTO airports VALUES ('mad', 'Madrid',             'es',     40.4840,     -3.5680);
-INSERT INTO airports VALUES ('zrh', 'Zurich',             'se',     47.4515,      8.5646);
-INSERT INTO airports VALUES ('akl', 'Auckland',           'nz',    -36.9993,    174.7879);
-INSERT INTO airports VALUES ('hyd', 'Hyderabad',          'in',     17.2403,     78.4294);
-INSERT INTO airports VALUES ('cgk', 'Jakarta',            'id',     -6.1256,    106.6558);
-INSERT INTO airports VALUES ('mel', 'Melbourne',          'au',    -37.6637,    144.8448);
-INSERT INTO airports VALUES ('pek', 'Beijing',            'cn',     40.0725,    116.5974);
-INSERT INTO airports VALUES ('csx', 'Changsha',           'cn',     28.1913,    113.2192);
-INSERT INTO airports VALUES ('tlv', 'Tel Aviv',           'il',     32.0055,     34.8854);
-INSERT INTO airports VALUES ('bru', 'Brussels',           'be',     50.9010,      4.4856);
-INSERT INTO airports VALUES ('ams', 'Amsterdam',          'nl',     52.3105,      4.7683);
-INSERT INTO airports VALUES ('hel', 'Helsinki',           'fl',     60.3183,     24.9497);
-INSERT INTO airports VALUES ('tpe', 'Taiwan',             'tw',     25.0797,    121.2342);
-INSERT INTO airports VALUES ('scl', 'Santiago',           'cl',    -33.3898,    -70.7945);
-INSERT INTO airports VALUES ('waw', 'Warsaw',             'pl',     52.1672,     20.9679);
-INSERT INTO airports VALUES ('del', 'Delhi',              'in',     28.5562,     77.1000);
-INSERT INTO airports VALUES ('jnb', 'Johannesburg',       'za',    -26.1367,     28.2411);
-INSERT INTO airports VALUES ('cwl', 'Cardiff',            'gb',     51.3985,      3.3397);
-INSERT INTO airports VALUES ('osl', 'Oslo',               'no',     60.1976,     11.0004);
-INSERT INTO airports VALUES ('doh', 'Doha',               'qa',     25.2609,     51.6138);
-INSERT INTO airports VALUES ('pnq', 'Pune',               'in',     18.5793,     73.9089);
-INSERT INTO airports VALUES ('maa', 'Chennai',            'in',     12.9941,     80.1707);
-INSERT INTO airports VALUES ('pvg', 'Shanghai',           'cn',     31.1443,    121.8083);
-INSERT INTO airports VALUES ('cbr', 'Canberra',           'au',     35.3052,    149.1934);
+INSERT INTO airports VALUES ('dub', 'Dublin',             'ir',   53.4264,   -6.2499);
+INSERT INTO airports VALUES ('lhr', 'London',             'gb',   51.4603,   -0.4390);
+INSERT INTO airports VALUES ('man', 'Manchester',         'gb',   53.3590,   -2.2705);
+INSERT INTO airports VALUES ('cwl', 'Cardiff',            'gb',   51.3985,    3.3397);
+INSERT INTO airports VALUES ('fra', 'Frankfurt',          'de',   50.0379,    8.5621);
+INSERT INTO airports VALUES ('arn', 'Stockholm',          'se',   59.6497,   17.9237);
+INSERT INTO airports VALUES ('cdg', 'Paris',              'fr',   49.0097,    2.5477);
+INSERT INTO airports VALUES ('mxp', 'Milan',              'it',   45.6286,    8.7236);
+INSERT INTO airports VALUES ('mad', 'Madrid',             'es',   40.4840,   -3.5680);
+INSERT INTO airports VALUES ('zrh', 'Zurich',             'se',   47.4515,    8.5646);
+INSERT INTO airports VALUES ('bru', 'Brussels',           'be',   50.9010,    4.4856);
+INSERT INTO airports VALUES ('ams', 'Amsterdam',          'nl',   52.3105,    4.7683);
+INSERT INTO airports VALUES ('hel', 'Helsinki',           'fl',   60.3183,   24.9497);
+INSERT INTO airports VALUES ('waw', 'Warsaw',             'pl',   52.1672,   20.9679);
+INSERT INTO airports VALUES ('osl', 'Oslo',               'no',   60.1976,   11.0004);
+
+INSERT INTO airports VALUES ('cpt', 'Cape Town',          'za',  -33.9725,   18.6019);
+INSERT INTO airports VALUES ('jnb', 'Johannesburg',       'za',  -26.1367,   28.2411);
+INSERT INTO airports VALUES ('scl', 'Santiago',           'cl',  -33.3898,  -70.7945);
+
+INSERT INTO airports VALUES ('akl', 'Auckland',           'nz',  -36.9993,  174.7879);
+INSERT INTO airports VALUES ('syd', 'Sydney',             'au',  -33.9399,  151.1752);
+INSERT INTO airports VALUES ('mel', 'Melbourne',          'au',  -37.6637,  144.8448);
+INSERT INTO airports VALUES ('cbr', 'Canberra',           'au',  -35.3052,  149.1934);
+
+INSERT INTO airports VALUES ('bah', 'Bahrain',            'bh',   26.2697,   50.6259);
+INSERT INTO airports VALUES ('auh', 'UAE',                'ae',   24.4329,   54.6445);
+INSERT INTO airports VALUES ('doh', 'Doha',               'qa',   25.2609,   51.6138);
+INSERT INTO airports VALUES ('tlv', 'Tel Aviv',           'il',   32.0055,   34.8854);
+
+INSERT INTO airports VALUES ('nrt', 'Tokyo',              'jp',   35.7719,  140.3928);
+INSERT INTO airports VALUES ('itm', 'Osaka',              'jp',   34.4338,  135.2263);
+INSERT INTO airports VALUES ('icn', 'Seoul',              'kr',   37.4601,  126.4406);
+
+INSERT INTO airports VALUES ('sin', 'Singapore',          'sg',    1.4201,  103.8645);
+INSERT INTO airports VALUES ('cgk', 'Jakarta',            'id',   -6.1256,  106.6558);
+
+INSERT INTO airports VALUES ('hyd', 'Hyderabad',          'in',   17.2403,   78.4294);
+INSERT INTO airports VALUES ('bom', 'Mumbai',             'in',   19.0901,   72.8687);
+INSERT INTO airports VALUES ('del', 'Delhi',              'in',   28.5562,   77.1000);
+INSERT INTO airports VALUES ('pnq', 'Pune',               'in',   18.5793,   73.9089);
+INSERT INTO airports VALUES ('maa', 'Chennai',            'in',   12.9941,   80.1707);
+
+INSERT INTO airports VALUES ('hkg', 'Hong Kong',          'hk',   22.3080,  113.9184);
+INSERT INTO airports VALUES ('tpe', 'Taiwan',             'tw',   25.0797,  121.2342);
+INSERT INTO airports VALUES ('pvg', 'Shanghai',           'cn',   31.1443,  121.8083);
+INSERT INTO airports VALUES ('pek', 'Beijing',            'cn',   40.0725,  116.5974);
+INSERT INTO airports VALUES ('csx', 'Changsha',           'cn',   28.1913,  113.2192);
 
 
 CREATE TABLE metros  (
@@ -171,6 +179,34 @@ INSERT INTO metros VALUES ('eqn', 'bos', 'Boston',        '', 'bo1,bo2', 'Y');
 INSERT INTO metros VALUES ('eqn', 'yow', 'Ottowa',        '', 'ot1', 'Y');
 INSERT INTO metros VALUES ('eqn', 'yul', 'Montreal',      '', 'mt1', 'Y');
 INSERT INTO metros VALUES ('eqn', 'ysj', 'Saint John',    '', 'sj1', 'Y');
+INSERT INTO metros VALUES ('eqn', 'sea', 'Seattle',       '', '', 'Y');
+INSERT INTO metros VALUES ('eqn', 'hel', 'Helsinki',      '', '', 'Y');
+INSERT INTO metros VALUES ('eqn', 'hkg', 'Hong Kong',     '', '', 'Y');
+INSERT INTO metros VALUES ('eqn', 'ams', 'Amsterdam',     '', '', 'Y');
+INSERT INTO metros VALUES ('eqn', 'jfk', 'New York',      '', '', 'Y');
+INSERT INTO metros VALUES ('eqn', 'nrt', 'Tokyo',         '', '', 'Y');
+INSERT INTO metros VALUES ('eqn', 'atl', 'Atlanta',       '', '', 'Y');
+INSERT INTO metros VALUES ('eqn', 'icn', 'Seoul',         '', '', 'Y');
+INSERT INTO metros VALUES ('eqn', 'mad', 'Madrid',        '', '', 'Y');
+INSERT INTO metros VALUES ('eqn', 'gru', 'Sao Paulo',     '', '', 'Y');
+INSERT INTO metros VALUES ('eqn', 'fra', 'Frankfurt',     '', '', 'Y');
+INSERT INTO metros VALUES ('eqn', 'syd', 'Sydney',        '', '', 'Y');
+INSERT INTO metros VALUES ('eqn', 'lhr', 'London',        '', '', 'Y');
+INSERT INTO metros VALUES ('eqn', 'sin', 'Singapore',     '', '', 'Y');
+INSERT INTO metros VALUES ('eqn', 'arn', 'Stockholm',     '', '', 'Y');
+INSERT INTO metros VALUES ('eqn', 'cdg', 'Paris',         '', '', 'Y');
+INSERT INTO metros VALUES ('eqn', 'yyz', 'Toronto',       '', '', 'Y');
+INSERT INTO metros VALUES ('eqn', 'mel', 'Melbourne',     '', '', 'Y');
+INSERT INTO metros VALUES ('eqn', 'itn', 'Osaka',         '', '', 'Y');
+INSERT INTO metros VALUES ('eqn', 'man', 'Manchester',    '', '', 'Y');
+INSERT INTO metros VALUES ('eqn', 'mia', 'Miami',         '', '', 'Y');
+INSERT INTO metros VALUES ('eqn', 'bom', 'Mumbai',        '', '', 'Y');
+INSERT INTO metros VALUES ('eqn', 'sfo', 'Silicon Valley','', '', 'Y');
+INSERT INTO metros VALUES ('eqn', 'lax', 'Los Angeles',   '', '', 'Y');
+INSERT INTO metros VALUES ('eqn', 'ohr', 'Chicago',       '', '', 'Y');
+INSERT INTO metros VALUES ('eqn', 'dfw', 'Dallas',        '', '', 'Y');
+
+
 
 INSERT INTO metros VALUES ('aws', 'iad', 'us-east-1', '',                'a,b,c,d,e,f', 'Y');
 INSERT INTO metros VALUES ('aws', 'dfw', 'us-east-1', 'us-east-1-dfw-1', 'a',           'Y');
