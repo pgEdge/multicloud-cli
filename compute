@@ -357,7 +357,7 @@ def list_nodes(provider, metro=None, project=None, json=False):
       return
 
     p = PrettyTable()
-    p.field_names = ["Provider", "Node", "Status", "Size", "Country", "Metro", "Location", "Public IP", "Private IP"]
+    p.field_names = ["Provider", "Airport", "Node", "Status", "Size", "Country", "Metro", "Location", "Public IP", "Private IP"]
     p.align["Node"] = "l"
     p.align["Size"] = "l"
     p.align["Public IP"] = "l"
@@ -389,9 +389,9 @@ def aws_node_list(conn, metro, project, json):
         location = n.extra["availability"]
         size = n.extra["instance_type"]
         country = metro[:2]
-        metro = metro
         key_name = n.extra['key_name']
-        nl.append(["aws", node, status, size, country, metro, location, public_ip, private_ip])
+        airport = util.get_airport("aws", metro)
+        nl.append(["aws", airport, node, status, size, country, metro, location, public_ip, private_ip])
 
     return(nl)
 
@@ -407,9 +407,10 @@ def eqn_node_list(conn, metro, project, json):
         size = str(n.size.id)
         country = str(n.extra["facility"]["metro"]["country"]).lower()
         metro = f"{n.extra['facility']['metro']['name']} ({n.extra['facility']['metro']['code']})"
+        airport = util.get_airport("eqn", metro)
         location = n.extra["facility"]["code"]
         status = n.state
-        nl.append(["eqn", node, status, size, country, metro, location, public_ip, private_ip])
+        nl.append(["eqn", airport, node, status, size, country, metro, location, public_ip, private_ip])
 
     return(nl)
 
