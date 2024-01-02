@@ -11,7 +11,7 @@
             "type": "python",
             "request": "launch",
             "program": "${file}",
-            "args": ["create-node",  "aws", "us-east-1", "t2"],
+            "args": ["list-nodes",  "eqn"],
             "console": "integratedTerminal",
             "justMyCode": true
         }

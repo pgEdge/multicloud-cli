@@ -406,7 +406,8 @@ def eqn_node_list(conn, metro, project, json):
         private_ip = n.private_ips[0]
         size = str(n.size.id)
         country = str(n.extra["facility"]["metro"]["country"]).lower()
-        metro = f"{n.extra['facility']['metro']['name']} ({n.extra['facility']['metro']['code']})"
+        metro = f"{n.extra['facility']['metro']['name']}"
+        # code = f"{n.extra['facility']['metro']['code']}"
         airport = util.get_airport("eqn", metro)
         location = n.extra["facility"]["code"]
         status = n.state
