@@ -12,7 +12,7 @@ from libcloud.compute.types import Provider
 
 import termcolor
 
-CONFIG = f"{os.getenv('HOME')}/.multicloud.conf"
+CONFIG = f"{os.getenv('HOME')}/.multicloud/conf"
 
 PROVIDERS = \
     [
@@ -64,23 +64,28 @@ def get_connection(provider="equinixmetal", metro=None, project=None):
     elif provider == "eqn":
         provider = "equinixmetal"
 
-    try:
-        Driver = libcloud.compute.providers.get_driver(provider)
-        if provider in ("equinixmetal"):
+    Driver = libcloud.compute.providers.get_driver(provider)
+    if provider in ("equinixmetal"):
+        try:
             p1 = sect["api_token"]
             conn = Driver(p1)
             if not project:
                 project = sect["project"]
-        elif provider in ("ec2"):
+        except Exception as e:
+           exit_message(f"cannot load [eqn] section of config file '{CONFIG}'\n {str(e)}")
+
+    elif provider in ("ec2"):
+        try:
             p1 = sect["access_key_id"]
             p2 = sect["secret_access_key"]
             if not metro:
                 metro = sect["metro"]
             conn = Driver(p1, p2, region=metro )
-        else:
-            exit_message(f"Invalid provider '{provider}'")
-    except Exception as e:
-        exit_message(str(e), 1)
+        except Exception as e:
+           exit_message(f"cannot load [aws] section of config file '{CONFIG}'\n {str(e)}")
+
+    else:
+        exit_message(f"Invalid provider '{provider}'")
 
     airport = get_airport(provider, metro)
 
